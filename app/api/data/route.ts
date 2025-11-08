@@ -62,6 +62,15 @@ export async function POST(request: Request) {
       newEntity.priority = newEntity.priority || "medium"
     }
 
+    if (type === "ticket") {
+      newEntity.status = newEntity.status || "New"
+      newEntity.priority = newEntity.priority || "Medium"
+      newEntity.assigneeId = newEntity.assigneeId || "mohammed-ahmadi"
+      const now = new Date().toISOString()
+      newEntity.createdAt = newEntity.createdAt || now
+      newEntity.updatedAt = newEntity.updatedAt || now
+    }
+
     ;(data[collection] as any[]).push(newEntity)
     writeData(data)
 
