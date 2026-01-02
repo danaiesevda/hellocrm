@@ -97,17 +97,22 @@
 @theme inline {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 
-  /* Burgundy Accent (same for both themes) */
-  --color-crm-primary: #c7375f;
-  --color-crm-primary-hover: #d44567;
-  --color-crm-primary-light: #e84a74;
+  /* Primary Accent - Blue (matching CLOSING status) */
+  --color-crm-primary: #3b82f6;
+  --color-crm-primary-hover: #2563eb;
+  --color-crm-primary-light: #60a5fa;
 
-  /* Status Colors (same for both themes) */
-  --color-crm-success: #28a745;
-  --color-crm-warning: #E09B40;
-  --color-crm-danger: #dc3545;
-  --color-crm-info: #17a2b8;
-  --color-crm-purple: #9d4edd;
+  /* Status Colors (matching image - light/pastel versions) */
+  --color-crm-success: #90EE90; /* CLOSED - light green */
+  --color-crm-warning: #FFD700; /* PRE-SALE - light yellow/orange */
+  --color-crm-danger: #FFB6C1; /* LOST - light pink/red */
+  --color-crm-info: #87CEEB; /* CLOSING - light blue */
+  --color-crm-purple: #DDA0DD; /* NEW - light purple */
+  
+  /* Probability Colors (light/pastel versions) */
+  --color-crm-prob-high: #90EE90; /* HIGH - light green */
+  --color-crm-prob-mid: #FFD700; /* MID - light yellow */
+  --color-crm-prob-low: #FFB6C1; /* LOW - light pink */
 
   /* Semantic tokens */
   --color-background: var(--color-crm-bg);

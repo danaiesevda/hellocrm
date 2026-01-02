@@ -27,30 +27,71 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { type, ...entity } = body
 
+    if (!type) {
+      return NextResponse.json({ error: "Type is required" }, { status: 400 })
+    }
+
     const data = readData()
     const collection = `${type}s` as keyof typeof data
 
     if (!data[collection] || !Array.isArray(data[collection])) {
-      return NextResponse.json({ error: "Invalid collection" }, { status: 400 })
+      // Initialize empty array if collection doesn't exist
+      if (!data[collection]) {
+        data[collection] = []
+      } else {
+        return NextResponse.json({ error: `Invalid collection: ${String(collection)}` }, { status: 400 })
+      }
     }
 
-    // Generate ID
-    const maxId = Math.max(
-      ...(data[collection] as any[]).map((item: any) => parseInt(item.id) || 0),
-      0,
-    )
-    const newId = (maxId + 1).toString()
+    // Generate ID - use provided ID if available (for companies), otherwise generate numeric ID
+    let newId = entity.id
+    if (!newId) {
+      // For companies, IDs are strings, so we generate numeric IDs for other types
+      if (type === "company") {
+        // Companies should have IDs provided from the name
+        if (!entity.name || !entity.name.trim()) {
+          return NextResponse.json({ error: "Company name is required" }, { status: 400 })
+        }
+        const baseId = entity.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") || "company-1"
+        // Check if ID already exists, append number if needed
+        let counter = 1
+        newId = baseId
+        while ((data[collection] as any[]).some((item: any) => item.id === newId)) {
+          newId = `${baseId}-${counter}`
+          counter++
+        }
+      } else {
+        // For other types, generate numeric IDs
+        const maxId = Math.max(
+          ...(data[collection] as any[]).map((item: any) => {
+            const parsed = parseInt(item.id)
+            return isNaN(parsed) ? 0 : parsed
+          }),
+          0,
+        )
+        newId = (maxId + 1).toString()
+      }
+    } else {
+      // If ID is provided, check for duplicates (for companies)
+      if (type === "company" && (data[collection] as any[]).some((item: any) => item.id === newId)) {
+        return NextResponse.json({ error: "Company with this ID already exists" }, { status: 400 })
+      }
+    }
 
     // Add default values
     const newEntity = {
       ...entity,
       id: newId,
-      ownerId: entity.ownerId || "mohammed-ahmadi",
+      ownerId: entity.ownerId || "sevda-danaie",
     }
 
     // Add type-specific defaults
     if (type === "contact") {
-      newEntity.avatar = newEntity.avatar || "/placeholder.svg?height=80&width=80"
+      // Generate avatar URL using UI Avatars service
+      const firstName = entity.firstName || ""
+      const lastName = entity.lastName || ""
+      const initials = `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() || "U"
+      newEntity.avatar = newEntity.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName + " " + lastName)}&background=87CEEB&color=fff&size=128&bold=true`
       newEntity.lastActivity = newEntity.lastActivity || "No activity yet"
     }
 
@@ -65,19 +106,25 @@ export async function POST(request: Request) {
     if (type === "ticket") {
       newEntity.status = newEntity.status || "New"
       newEntity.priority = newEntity.priority || "Medium"
-      newEntity.assigneeId = newEntity.assigneeId || "mohammed-ahmadi"
+      newEntity.assigneeId = newEntity.assigneeId || "sevda-danaie"
       const now = new Date().toISOString()
       newEntity.createdAt = newEntity.createdAt || now
       newEntity.updatedAt = newEntity.updatedAt || now
     }
 
-    ;(data[collection] as any[]).push(newEntity)
-    writeData(data)
+    try {
+      ;(data[collection] as any[]).push(newEntity)
+      writeData(data)
+    } catch (writeError: any) {
+      console.error("Error writing data:", writeError)
+      return NextResponse.json({ error: `Failed to save ${type}: ${writeError?.message || "Unknown error"}` }, { status: 500 })
+    }
 
     return NextResponse.json(newEntity, { status: 201 })
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating entity:", error)
-    return NextResponse.json({ error: "Failed to create entity" }, { status: 500 })
+    const errorMessage = error?.message || "Failed to create entity"
+    return NextResponse.json({ error: errorMessage, details: error?.stack }, { status: 500 })
   }
 }
 

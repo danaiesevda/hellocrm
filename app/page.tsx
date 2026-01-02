@@ -15,14 +15,14 @@ export default function DashboardPage() {
       <div className="p-6">
         {/* Page Header */}
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <Home className="w-6 h-6 text-crm-primary" />
-            <div>
+          <div>
+            <div className="flex items-center gap-3">
+              <Home className="w-6 h-6 text-white" />
               <h1 className="text-2xl font-semibold text-crm-text-primary">Dashboard</h1>
-              <p className="text-sm text-crm-text-secondary mt-0.5">
-                Welcome back, {data.users[0]?.name || "User"}
-              </p>
             </div>
+            <p className="text-sm text-crm-text-secondary mt-0.5 ml-9">
+              Welcome back, {data.users[0]?.name || "User"}
+            </p>
           </div>
         </div>
 

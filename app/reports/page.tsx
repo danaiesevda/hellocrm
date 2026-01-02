@@ -133,58 +133,58 @@ export default function ReportsPage() {
     <CrmLayout>
       <div className="p-6">
         <div className="flex items-center gap-3 mb-6">
-          <BarChart3 className="w-6 h-6 text-crm-primary" />
+          <BarChart3 className="w-6 h-6 text-white" />
           <h1 className="text-2xl font-semibold text-crm-text-primary">Reports & Analytics</h1>
         </div>
 
         {/* Key Metrics Grid */}
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          <Card className="bg-crm-surface border-crm-border p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-crm-primary/20 flex items-center justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4 mb-6">
+          <Card className="bg-crm-surface border-crm-border p-4 hover:bg-crm-surface-elevated transition-colors">
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center flex-shrink-0">
                 <Users className="w-5 h-5 text-crm-primary" />
               </div>
-              <div>
-                <p className="text-2xl font-semibold text-crm-text-primary">{totalContacts}</p>
-                <p className="text-sm text-crm-text-secondary">Total Contacts</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-crm-text-secondary mb-1">Total Contacts</p>
+                <p className="text-xl font-semibold text-crm-text-primary">{totalContacts}</p>
               </div>
             </div>
           </Card>
 
-          <Card className="bg-crm-surface border-crm-border p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-crm-success/20 flex items-center justify-center">
+          <Card className="bg-crm-surface border-crm-border p-4 hover:bg-crm-surface-elevated transition-colors">
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center flex-shrink-0">
                 <Building2 className="w-5 h-5 text-crm-success" />
               </div>
-              <div>
-                <p className="text-2xl font-semibold text-crm-text-primary">{totalCompanies}</p>
-                <p className="text-sm text-crm-text-secondary">Total Companies</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-crm-text-secondary mb-1">Total Companies</p>
+                <p className="text-xl font-semibold text-crm-text-primary">{totalCompanies}</p>
               </div>
             </div>
           </Card>
 
-          <Card className="bg-crm-surface border-crm-border p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-crm-warning/20 flex items-center justify-center">
+          <Card className="bg-crm-surface border-crm-border p-4 hover:bg-crm-surface-elevated transition-colors">
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center flex-shrink-0">
                 <TrendingUp className="w-5 h-5 text-crm-warning" />
               </div>
-              <div>
-                <p className="text-2xl font-semibold text-crm-text-primary">{activeDeals}</p>
-                <p className="text-sm text-crm-text-secondary">Active Deals</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-crm-text-secondary mb-1">Active Deals</p>
+                <p className="text-xl font-semibold text-crm-text-primary">{activeDeals}</p>
               </div>
             </div>
           </Card>
 
-          <Card className="bg-crm-surface border-crm-border p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg bg-[#9d4edd]/20 flex items-center justify-center">
+          <Card className="bg-crm-surface border-crm-border p-4 hover:bg-crm-surface-elevated transition-colors">
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center flex-shrink-0">
                 <DollarSign className="w-5 h-5 text-[#9d4edd]" />
               </div>
-              <div>
-                <p className="text-2xl font-semibold text-crm-text-primary">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-crm-text-secondary mb-1">Pipeline Value</p>
+                <p className="text-xl font-semibold text-crm-text-primary">
                   ${Math.round(totalPipelineValue / 1000).toLocaleString()}K
                 </p>
-                <p className="text-sm text-crm-text-secondary">Pipeline Value</p>
               </div>
             </div>
           </Card>

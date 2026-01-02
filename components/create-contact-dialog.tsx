@@ -156,7 +156,8 @@ export function CreateContactDialog({
       })
 
       if (!response.ok) {
-        throw new Error("Failed to create contact")
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || "Failed to create contact")
       }
 
       // Reset form and close dialog
@@ -169,9 +170,10 @@ export function CreateContactDialog({
       } else {
         router.refresh()
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating contact:", error)
-      alert("Failed to create contact. Please try again.")
+      const errorMessage = error?.message || "Failed to create contact. Please try again."
+      alert(errorMessage)
     } finally {
       setIsSubmitting(false)
     }

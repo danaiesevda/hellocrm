@@ -35,60 +35,67 @@ export function DashboardStats() {
       value: `$${Math.round(totalPipelineValue / 1000).toLocaleString()}K`,
       icon: DollarSign,
       color: "text-crm-primary",
-      bgColor: "bg-crm-primary/30",
+      bgColor: "",
     },
     {
       label: "Active Deals",
       value: activeDeals.toString(),
       icon: TrendingUp,
       color: "text-crm-success",
-      bgColor: "bg-crm-success/30",
+      bgColor: "",
     },
     {
       label: "Total Revenue",
       value: `$${Math.round(totalRevenue / 1000).toLocaleString()}K`,
       icon: Target,
       color: "text-crm-warning",
-      bgColor: "bg-crm-warning/30",
+      bgColor: "",
     },
     {
       label: "Win Rate",
       value: `${winRate}%`,
       icon: Percent,
       color: "text-[#9d4edd]",
-      bgColor: "bg-[#9d4edd]/30",
+      bgColor: "",
     },
     {
       label: "Total Contacts",
       value: contacts.length.toString(),
       icon: Users,
       color: "text-crm-primary",
-      bgColor: "bg-crm-primary/30",
+      bgColor: "",
     },
     {
       label: "Total Companies",
       value: companies.length.toString(),
       icon: Building2,
       color: "text-crm-success",
-      bgColor: "bg-crm-success/30",
+      bgColor: "",
     },
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4">
       {stats.map((stat) => (
         <Card
           key={stat.label}
           className="bg-crm-surface border-crm-border p-4 hover:bg-crm-surface-elevated transition-colors"
         >
-          <div className="flex items-center gap-3">
-            <div className={`${stat.bgColor} p-2 rounded-lg`}>
+          <div className="flex items-start gap-3">
+            <div className="flex items-center justify-center flex-shrink-0">
               <stat.icon className={`w-5 h-5 ${stat.color}`} />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-crm-text-secondary mb-0.5">{stat.label}</p>
-              <p className="text-xl font-semibold text-crm-text-primary">{stat.value}</p>
-            </div>
+            {stat.value && (
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-crm-text-secondary mb-1">{stat.label}</p>
+                <p className="text-xl font-semibold text-crm-text-primary">{stat.value}</p>
+              </div>
+            )}
+            {!stat.value && (
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-crm-text-primary">{stat.label}</p>
+              </div>
+            )}
           </div>
         </Card>
       ))}

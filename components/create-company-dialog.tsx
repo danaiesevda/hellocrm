@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import { toast } from "sonner"
 import {
   Dialog,
   DialogContent,
@@ -80,7 +81,15 @@ export function CreateCompanyDialog({
     setIsSubmitting(true)
     try {
       // Generate company ID from name (lowercase, replace spaces with hyphens)
+      if (!data.name || !data.name.trim()) {
+        throw new Error("Company name is required")
+      }
+
       const companyId = data.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
+
+      if (!companyId) {
+        throw new Error("Invalid company name. Please use alphanumeric characters.")
+      }
 
       const response = await fetch("/api/data", {
         method: "POST",
@@ -90,20 +99,36 @@ export function CreateCompanyDialog({
         body: JSON.stringify({
           type: "company",
           id: companyId,
-          ...data,
+          name: data.name.trim(),
+          domain: data.domain?.trim() || "",
+          phone: data.phone?.trim() || "",
+          industry: data.industry?.trim() || "",
+          employees: data.employees?.trim() || "",
+          revenue: data.revenue?.trim() || "",
+          address: data.address?.trim() || "",
+          city: data.city?.trim() || "",
+          country: data.country?.trim() || "",
+          lifecycleStage: data.lifecycleStage || "Lead",
+          isPrimary: data.isPrimary || false,
         }),
       })
 
       if (!response.ok) {
-        throw new Error("Failed to create company")
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `Failed to create company: ${response.status} ${response.statusText}`)
       }
 
+      const result = await response.json()
+      console.log("Company created successfully:", result)
+
+      toast.success("Company created successfully!")
       form.reset()
       onOpenChange(false)
       router.refresh()
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating company:", error)
-      alert("Failed to create company. Please try again.")
+      const errorMessage = error?.message || "Failed to create company. Please try again."
+      toast.error(errorMessage)
     } finally {
       setIsSubmitting(false)
     }

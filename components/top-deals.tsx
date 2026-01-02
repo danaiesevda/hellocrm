@@ -23,13 +23,20 @@ export function TopDeals() {
   const getStageColor = (stage: string) => {
     switch (stage) {
       case "Closed Won":
-        return "bg-crm-success/20 text-crm-success"
+        return "bg-crm-success/20 text-crm-success border-crm-success/30"
+      case "Closed Lost":
+        return "bg-crm-danger/20 text-crm-danger border-crm-danger/30"
       case "Negotiation":
-        return "bg-crm-warning/20 text-crm-warning"
+      case "CLOSING":
+        return "bg-crm-info/20 text-crm-info border-crm-info/30"
       case "Proposal":
-        return "bg-crm-primary/20 text-crm-primary"
+      case "PRE-SALE":
+        return "bg-crm-warning/20 text-crm-warning border-crm-warning/30"
+      case "Qualified":
+      case "NEW":
+        return "bg-crm-purple/20 text-crm-purple border-crm-purple/30"
       default:
-        return "bg-crm-info/20 text-crm-info"
+        return "bg-crm-purple/20 text-crm-purple border-crm-purple/30"
     }
   }
 
@@ -81,7 +88,7 @@ export function TopDeals() {
                   </p>
                   <div className="flex items-center gap-1 text-xs text-crm-text-secondary mt-1">
                     <Calendar className="w-3 h-3" />
-                    <span>{new Date(deal.closeDate).toLocaleDateString()}</span>
+                    <span>{new Date(deal.closeDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                   </div>
                 </div>
               </div>

@@ -89,14 +89,15 @@ export function CreateTicketDialog({
           priority: data.priority,
           contactId: data.contactId || "",
           companyId: data.companyId || "",
-          assigneeId: "mohammed-ahmadi",
+          assigneeId: "sevda-danaie",
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         }),
       })
 
       if (!response.ok) {
-        throw new Error("Failed to create ticket")
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || "Failed to create ticket")
       }
 
       form.reset()
@@ -108,9 +109,10 @@ export function CreateTicketDialog({
       } else {
         router.refresh()
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating ticket:", error)
-      alert("Failed to create ticket. Please try again.")
+      const errorMessage = error?.message || "Failed to create ticket. Please try again."
+      alert(errorMessage)
     } finally {
       setIsSubmitting(false)
     }

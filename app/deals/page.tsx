@@ -53,13 +53,31 @@ function DealsPageContent() {
   const getStageColor = (stage: string) => {
     switch (stage) {
       case "Closed Won":
-        return "bg-crm-success/20 text-crm-success"
+        return "bg-crm-success/20 text-crm-success border-crm-success/30"
+      case "Closed Lost":
+        return "bg-crm-danger/20 text-crm-danger border-crm-danger/30"
       case "Negotiation":
-        return "bg-crm-warning/20 text-crm-warning"
+      case "CLOSING":
+        return "bg-crm-info/20 text-crm-info border-crm-info/30"
       case "Proposal":
-        return "bg-crm-primary/20 text-crm-primary"
+      case "PRE-SALE":
+        return "bg-crm-warning/20 text-crm-warning border-crm-warning/30"
+      case "Qualified":
+      case "NEW":
+        return "bg-crm-purple/20 text-crm-purple border-crm-purple/30"
       default:
-        return "bg-[#9d4edd]/20 text-[#9d4edd]"
+        return "bg-crm-purple/20 text-crm-purple border-crm-purple/30"
+    }
+  }
+  
+  const getProbabilityColor = (probability: string) => {
+    const prob = probability?.toLowerCase() || ""
+    if (prob.includes("high")) {
+      return "bg-crm-prob-high/20 text-crm-prob-high border-crm-prob-high/30"
+    } else if (prob.includes("mid") || prob.includes("medium")) {
+      return "bg-crm-prob-mid/20 text-crm-prob-mid border-crm-prob-mid/30"
+    } else {
+      return "bg-crm-prob-low/20 text-crm-prob-low border-crm-prob-low/30"
     }
   }
 
@@ -68,7 +86,7 @@ function DealsPageContent() {
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <TrendingUp className="w-6 h-6 text-crm-primary" />
+            <TrendingUp className="w-6 h-6 text-white" />
             <h1 className="text-2xl font-semibold text-crm-text-primary">Deals</h1>
           </div>
           <Link href="/deals?create=true">
@@ -167,12 +185,16 @@ function DealsPageContent() {
                       <td className="px-6 py-4">
                         <Badge className={getStageColor(deal.stage)}>{deal.stage}</Badge>
                       </td>
-                      <td className="px-6 py-4 text-crm-text-secondary">{deal.probability}%</td>
+                      <td className="px-6 py-4">
+                        <Badge variant="outline" className={getProbabilityColor(deal.probability >= 70 ? "high" : deal.probability >= 40 ? "mid" : "low")}>
+                          {deal.probability >= 70 ? "HIGH" : deal.probability >= 40 ? "MID" : "LOW"}
+                        </Badge>
+                      </td>
                       <td className="px-6 py-4 text-crm-text-secondary">
                         {getCompanyName(deal.companyId)}
                       </td>
                       <td className="px-6 py-4 text-crm-text-secondary">
-                        {new Date(deal.closeDate).toLocaleDateString()}
+                        {new Date(deal.closeDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </td>
                       <td className="px-6 py-4">
                         <Badge

@@ -89,15 +89,17 @@ export function CreateDealDialog({
       })
 
       if (!response.ok) {
-        throw new Error("Failed to create deal")
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || "Failed to create deal")
       }
 
       form.reset()
       onOpenChange(false)
       router.refresh()
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating deal:", error)
-      alert("Failed to create deal. Please try again.")
+      const errorMessage = error?.message || "Failed to create deal. Please try again."
+      alert(errorMessage)
     } finally {
       setIsSubmitting(false)
     }

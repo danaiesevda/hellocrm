@@ -42,7 +42,7 @@ export default function SettingsPage() {
                   </Label>
                   <Input
                     id="firstName"
-                    defaultValue="Mohammed"
+                    defaultValue="Sevda"
                     className="mt-1.5 bg-crm-bg border-crm-border text-crm-text-primary"
                   />
                 </div>
@@ -52,7 +52,7 @@ export default function SettingsPage() {
                   </Label>
                   <Input
                     id="lastName"
-                    defaultValue="Ahmadi"
+                    defaultValue="Danaie"
                     className="mt-1.5 bg-crm-bg border-crm-border text-crm-text-primary"
                   />
                 </div>
@@ -64,7 +64,7 @@ export default function SettingsPage() {
                 <Input
                   id="email"
                   type="email"
-                  defaultValue="mohammed@company.com"
+                  defaultValue="danaie.sevda@gmail.com"
                   className="mt-1.5 bg-crm-bg border-crm-border text-crm-text-primary"
                 />
               </div>

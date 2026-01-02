@@ -2,6 +2,7 @@ import type React from "react"
 import "./globals.css"
 import type { Metadata } from "next"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
 
 export const metadata: Metadata = {
   title: "HelloCRM",
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

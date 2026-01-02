@@ -18,31 +18,54 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { useEffect, useState } from "react"
 
 export function ContactDetailView({ contactId }: { contactId: string }) {
-  const contact = {
-    id: "1",
-    firstName: "Olly",
-    lastName: "Topley",
-    fullName: "Olly Topley",
-    email: "olly.topley@shell.com",
-    jobTitle: "Global Head of Insights at Shell",
-    companyId: "shell",
-    companyName: "Shell",
-    companyDomain: "shell.com",
-    phone: "--",
-    mobilePhone: "--",
-    streetAddress: "--",
-    city: "--",
-    stateRegion: "--",
-    postalCode: "--",
-    leadStatus: "--",
-    lifecycleStage: "Opportunity",
-    buyingRole: "--",
-    owner: "Mohammed Ahmadi",
-    avatar: "/professional-business-person.png",
-    lastActivity: "Most recent activity shows a completed call with Olly T",
+  const [contact, setContact] = useState<any>(null)
+  const [company, setCompany] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadContact() {
+      try {
+        const response = await fetch("/api/data")
+        if (response.ok) {
+          const data = await response.json()
+          const foundContact = data.contacts?.find((c: any) => c.id === contactId)
+          if (foundContact) {
+            const foundCompany = data.companies?.find((c: any) => c.id === foundContact.companyId)
+            setContact(foundContact)
+            setCompany(foundCompany)
+          }
+        }
+      } catch (error) {
+        console.error("Error loading contact:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadContact()
+  }, [contactId])
+
+  if (loading) {
+    return (
+      <div className="h-full flex items-center justify-center bg-crm-bg">
+        <div className="text-crm-text-secondary">Loading...</div>
+      </div>
+    )
   }
+
+  if (!contact) {
+    return (
+      <div className="h-full flex items-center justify-center bg-crm-bg">
+        <div className="text-crm-text-secondary">Contact not found</div>
+      </div>
+    )
+  }
+
+  const fullName = `${contact.firstName} ${contact.lastName}`
+  const companyName = company?.name || contact.companyId || "--"
+  const companyDomain = company?.domain || "--"
 
   return (
     <div className="h-full flex flex-col bg-crm-bg">
@@ -78,15 +101,15 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
             <div className="bg-crm-surface rounded-lg border border-crm-border p-6">
               <div className="flex items-start gap-4 mb-6">
                 <Avatar className="w-16 h-16">
-                  <AvatarImage src={contact.avatar || "/placeholder.svg"} alt={contact.fullName} />
+                  <AvatarImage src={contact.avatar || "/placeholder.svg"} alt={fullName} />
                   <AvatarFallback className="bg-crm-primary text-white text-lg">
                     {contact.firstName[0]}
                     {contact.lastName[0]}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <h2 className="text-lg font-semibold text-crm-text-primary mb-1">{contact.fullName}</h2>
-                  <p className="text-sm text-crm-text-secondary mb-1">{contact.jobTitle}</p>
+                  <h2 className="text-lg font-semibold text-crm-text-secondary mb-1">{fullName}</h2>
+                  <p className="text-sm text-crm-text-secondary mb-1">{contact.jobTitle || "--"}</p>
                   <p className="text-sm text-crm-text-secondary flex items-center gap-1">{contact.email}</p>
                 </div>
               </div>
@@ -142,43 +165,43 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
 
                 <div className="space-y-3">
                   <div>
-                    <label className="text-xs text-crm-text-tertiary">Email</label>
-                    <p className="text-sm text-crm-text-primary mt-0.5">{contact.email}</p>
+                    <label className="text-xs block mb-1" style={{ color: '#757575' }}>Email</label>
+                    <p className="text-sm text-crm-text-primary">{contact.email}</p>
                   </div>
 
                   <div>
-                    <label className="text-xs text-crm-text-tertiary">Phone Number</label>
-                    <p className="text-sm text-crm-text-secondary mt-0.5">{contact.phone}</p>
+                    <label className="text-xs block mb-1" style={{ color: '#757575' }}>Phone Number</label>
+                    <p className="text-sm text-crm-text-secondary">{contact.phone}</p>
                   </div>
 
                   <div>
-                    <label className="text-xs text-crm-text-tertiary">Mobile Phone Number</label>
-                    <p className="text-sm text-crm-text-secondary mt-0.5">{contact.mobilePhone}</p>
+                    <label className="text-xs block mb-1" style={{ color: '#757575' }}>Mobile Phone Number</label>
+                    <p className="text-sm text-crm-text-secondary">{contact.mobilePhone}</p>
                   </div>
 
                   <div>
-                    <label className="text-xs text-crm-text-tertiary">Company Name</label>
-                    <p className="text-sm text-crm-text-secondary mt-0.5">{contact.companyName}</p>
+                    <label className="text-xs block mb-1" style={{ color: '#757575' }}>Company Name</label>
+                    <p className="text-sm text-crm-text-secondary">{companyName}</p>
                   </div>
 
                   <div>
-                    <label className="text-xs text-crm-text-tertiary">Lead Status</label>
-                    <p className="text-sm text-crm-text-secondary mt-0.5">{contact.leadStatus}</p>
+                    <label className="text-xs block mb-1" style={{ color: '#757575' }}>Lead Status</label>
+                    <p className="text-sm text-crm-text-secondary">{contact.leadStatus}</p>
                   </div>
 
                   <div>
-                    <label className="text-xs text-crm-text-tertiary">Lifecycle Stage</label>
-                    <p className="text-sm text-crm-text-primary mt-0.5">{contact.lifecycleStage}</p>
+                    <label className="text-xs block mb-1" style={{ color: '#757575' }}>Lifecycle Stage</label>
+                    <p className="text-sm text-crm-text-primary">{contact.lifecycleStage}</p>
                   </div>
 
                   <div>
-                    <label className="text-xs text-crm-text-tertiary">Buying Role</label>
-                    <p className="text-sm text-crm-text-secondary mt-0.5">{contact.buyingRole}</p>
+                    <label className="text-xs block mb-1" style={{ color: '#757575' }}>Buying Role</label>
+                    <p className="text-sm text-crm-text-secondary">{contact.buyingRole}</p>
                   </div>
 
                   <div>
-                    <label className="text-xs text-crm-text-tertiary">Contact owner</label>
-                    <p className="text-sm text-crm-text-primary mt-0.5">{contact.owner}</p>
+                    <label className="text-xs block mb-1" style={{ color: '#757575' }}>Contact owner</label>
+                    <p className="text-sm text-crm-text-primary">Sevda Danaie</p>
                   </div>
                 </div>
               </div>
@@ -189,42 +212,42 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
           <div className="flex-1 min-w-0 space-y-4">
             {/* Tabs */}
             <Tabs defaultValue="about" className="w-full">
-              <div className="bg-crm-surface rounded-t-lg border border-crm-border border-b-0">
-                <TabsList className="w-full justify-start bg-transparent h-12 p-0 border-b border-crm-border">
-                  <TabsTrigger
-                    value="about"
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-crm-primary data-[state=active]:bg-transparent data-[state=active]:text-crm-text-primary px-6"
-                  >
-                    About
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="activities"
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-crm-primary data-[state=active]:bg-transparent data-[state=active]:text-crm-text-primary px-6"
-                  >
-                    Activities
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="revenue"
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-crm-primary data-[state=active]:bg-transparent data-[state=active]:text-crm-text-primary px-6"
-                  >
-                    Revenue
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="intelligence"
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-crm-primary data-[state=active]:bg-transparent data-[state=active]:text-crm-text-primary px-6"
-                  >
-                    Intelligence
-                  </TabsTrigger>
-                  <div className="ml-auto px-4 flex items-center">
-                    <Button variant="ghost" size="sm" className="text-crm-text-secondary hover:bg-crm-surface-elevated">
-                      Customize
-                    </Button>
-                  </div>
-                </TabsList>
-              </div>
+              <TabsList className="flex gap-2 mb-4 bg-transparent h-auto p-0">
+                <TabsTrigger
+                  value="about"
+                  className="rounded-lg border border-crm-border bg-transparent text-crm-text-secondary hover:text-crm-text-primary hover:bg-crm-surface-elevated hover:border-crm-border data-[state=active]:bg-crm-surface-elevated data-[state=active]:border-crm-border data-[state=active]:text-crm-text-primary px-4 py-2 h-auto"
+                >
+                  About
+                </TabsTrigger>
+                <TabsTrigger
+                  value="activities"
+                  className="rounded-lg border border-crm-border bg-transparent text-crm-text-secondary hover:text-crm-text-primary hover:bg-crm-surface-elevated hover:border-crm-border data-[state=active]:bg-crm-surface-elevated data-[state=active]:border-crm-border data-[state=active]:text-crm-text-primary px-4 py-2 h-auto"
+                >
+                  Activities
+                </TabsTrigger>
+                <TabsTrigger
+                  value="revenue"
+                  className="rounded-lg border border-crm-border bg-transparent text-crm-text-secondary hover:text-crm-text-primary hover:bg-crm-surface-elevated hover:border-crm-border data-[state=active]:bg-crm-surface-elevated data-[state=active]:border-crm-border data-[state=active]:text-crm-text-primary px-4 py-2 h-auto"
+                >
+                  Revenue
+                </TabsTrigger>
+                <TabsTrigger
+                  value="intelligence"
+                  className="rounded-lg border border-crm-border bg-transparent text-crm-text-secondary hover:text-crm-text-primary hover:bg-crm-surface-elevated hover:border-crm-border data-[state=active]:bg-crm-surface-elevated data-[state=active]:border-crm-border data-[state=active]:text-crm-text-primary px-4 py-2 h-auto"
+                >
+                  Intelligence
+                </TabsTrigger>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="rounded-lg border border-crm-border bg-transparent text-crm-text-secondary hover:text-crm-text-primary hover:bg-crm-surface-elevated hover:border-crm-border px-4 py-2 h-auto"
+                >
+                  Customize
+                </Button>
+              </TabsList>
 
               <TabsContent value="about" className="mt-0">
-                <div className="bg-crm-surface rounded-b-lg border border-crm-border p-6 space-y-6">
+                <div className="bg-crm-surface rounded-lg border border-crm-border p-6 space-y-6">
                   {/* Breeze Record Summary */}
                   <div>
                     <div className="flex items-center justify-between mb-3">
@@ -233,7 +256,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                         Beta
                       </Badge>
                     </div>
-                    <p className="text-sm text-crm-text-secondary mb-3">{contact.lastActivity}</p>
+                    <p className="text-sm text-crm-text-secondary mb-3">{contact.lastActivity || "No activity yet"}</p>
                     <Button
                       variant="outline"
                       size="sm"
@@ -252,28 +275,28 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                     </div>
                     <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                       <div>
-                        <label className="text-xs text-crm-text-tertiary">Company name</label>
-                        <p className="text-sm text-crm-text-secondary mt-1">{contact.companyName}</p>
+                        <label className="text-xs block mb-1" style={{ color: '#757575' }}>Company name</label>
+                        <p className="text-sm text-crm-text-secondary">{companyName}</p>
                       </div>
                       <div>
-                        <label className="text-xs text-crm-text-tertiary">Street address</label>
-                        <p className="text-sm text-crm-text-secondary mt-1">{contact.streetAddress}</p>
+                        <label className="text-xs block mb-1" style={{ color: '#757575' }}>Street address</label>
+                        <p className="text-sm text-crm-text-secondary">{contact.streetAddress}</p>
                       </div>
                       <div>
-                        <label className="text-xs text-crm-text-tertiary">City</label>
-                        <p className="text-sm text-crm-text-secondary mt-1">{contact.city}</p>
+                        <label className="text-xs block mb-1" style={{ color: '#757575' }}>City</label>
+                        <p className="text-sm text-crm-text-secondary">{contact.city}</p>
                       </div>
                       <div>
-                        <label className="text-xs text-crm-text-tertiary">Postal code</label>
-                        <p className="text-sm text-crm-text-secondary mt-1">{contact.postalCode}</p>
+                        <label className="text-xs block mb-1" style={{ color: '#757575' }}>Postal code</label>
+                        <p className="text-sm text-crm-text-secondary">{contact.postalCode}</p>
                       </div>
                       <div>
-                        <label className="text-xs text-crm-text-tertiary">State/Region</label>
-                        <p className="text-sm text-crm-text-secondary mt-1">{contact.stateRegion}</p>
+                        <label className="text-xs block mb-1" style={{ color: '#757575' }}>State/Region</label>
+                        <p className="text-sm text-crm-text-secondary">{contact.stateRegion}</p>
                       </div>
                       <div>
-                        <label className="text-xs text-crm-text-tertiary">Email</label>
-                        <p className="text-sm text-crm-text-primary mt-1">{contact.email}</p>
+                        <label className="text-xs block mb-1" style={{ color: '#757575' }}>Email</label>
+                        <p className="text-sm text-crm-text-primary">{contact.email}</p>
                       </div>
                     </div>
                   </div>
@@ -306,19 +329,19 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
               </TabsContent>
 
               <TabsContent value="activities">
-                <div className="bg-crm-surface rounded-b-lg border border-crm-border p-6">
+                <div className="bg-crm-surface rounded-lg border border-crm-border p-6">
                   <p className="text-crm-text-secondary">Activity timeline will appear here</p>
                 </div>
               </TabsContent>
 
               <TabsContent value="revenue">
-                <div className="bg-crm-surface rounded-b-lg border border-crm-border p-6">
+                <div className="bg-crm-surface rounded-lg border border-crm-border p-6">
                   <p className="text-crm-text-secondary">Revenue information will appear here</p>
                 </div>
               </TabsContent>
 
               <TabsContent value="intelligence">
-                <div className="bg-crm-surface rounded-b-lg border border-crm-border p-6">
+                <div className="bg-crm-surface rounded-lg border border-crm-border p-6">
                   <p className="text-crm-text-secondary">Intelligence insights will appear here</p>
                 </div>
               </TabsContent>
@@ -345,13 +368,13 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-crm-text-primary">{contact.companyName}</span>
+                      <span className="text-sm font-medium text-crm-text-primary">{companyName}</span>
                       <Badge variant="outline" className="text-xs border-crm-border text-crm-text-secondary">
                         Primary
                       </Badge>
                     </div>
-                    <p className="text-xs text-crm-text-secondary mt-1">Company Domain Name: {contact.companyDomain}</p>
-                    <p className="text-xs text-crm-text-secondary">Phone: {contact.phone}</p>
+                    <p className="text-xs text-crm-text-secondary mt-1">Company Domain Name: {companyDomain}</p>
+                    <p className="text-xs text-crm-text-secondary">Phone: {company?.phone || contact.phone || "--"}</p>
                     <Button
                       variant="link"
                       className="text-crm-primary hover:text-crm-primary-hover p-0 h-auto text-xs mt-2"

@@ -31,16 +31,18 @@ export function PipelineOverview() {
   const totalPipelineValue = dealsByStage.reduce((sum, s) => sum + s.value, 0)
 
   const getStageColor = (stageName: string) => {
-    // Assign different colors to each stage - using stronger, more vibrant colors
+    // Colors matching the image: NEW=purple, PRE-SALE=orange, CLOSING=blue, CLOSED=green, LOST=red
     switch (stageName) {
       case "Qualified":
+      case "NEW":
         return {
-          badge: "bg-[#9d4edd]/20 text-[#9d4edd] border-[#9d4edd]/40",
-          progress: "bg-[#9d4edd]/90",
-          summaryBg: "bg-[#9d4edd]/10 border-[#9d4edd]/30",
-          textColor: "text-[#9d4edd]",
+          badge: "bg-crm-purple/20 text-crm-purple border-crm-purple/40",
+          progress: "bg-crm-purple/90",
+          summaryBg: "bg-crm-purple/10 border-crm-purple/30",
+          textColor: "text-crm-purple",
         }
       case "Proposal":
+      case "PRE-SALE":
         return {
           badge: "bg-crm-warning/20 text-crm-warning border-crm-warning/40",
           progress: "bg-crm-warning/90",
@@ -48,18 +50,28 @@ export function PipelineOverview() {
           textColor: "text-crm-warning",
         }
       case "Negotiation":
+      case "CLOSING":
         return {
-          badge: "bg-crm-primary/20 text-crm-primary border-crm-primary/40",
-          progress: "bg-crm-primary/90",
-          summaryBg: "bg-crm-primary/10 border-crm-primary/30",
-          textColor: "text-crm-primary",
+          badge: "bg-crm-info/20 text-crm-info border-crm-info/40",
+          progress: "bg-crm-info/90",
+          summaryBg: "bg-crm-info/10 border-crm-info/30",
+          textColor: "text-crm-info",
         }
       case "Closed Won":
+      case "CLOSED":
         return {
           badge: "bg-crm-success/20 text-crm-success border-crm-success/40",
           progress: "bg-crm-success",
           summaryBg: "bg-crm-success/10 border-crm-success/30",
           textColor: "text-crm-success",
+        }
+      case "Closed Lost":
+      case "LOST":
+        return {
+          badge: "bg-crm-danger/20 text-crm-danger border-crm-danger/40",
+          progress: "bg-crm-danger/90",
+          summaryBg: "bg-crm-danger/10 border-crm-danger/30",
+          textColor: "text-crm-danger",
         }
       default:
         return {

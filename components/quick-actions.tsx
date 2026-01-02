@@ -13,6 +13,7 @@ import {
   Mail,
 } from "lucide-react"
 import Link from "next/link"
+import { toast } from "sonner"
 
 export function QuickActions() {
   const actions = [
@@ -75,19 +76,49 @@ export function QuickActions() {
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        {actions.map((action) => (
-          <Link key={action.label} href={action.href}>
-            <Button
-              variant="outline"
-              className="w-full h-auto p-3 flex flex-col items-center gap-2 border-crm-border hover:bg-crm-surface-elevated hover:border-crm-primary transition-colors"
-            >
-              <div className={`${action.bgColor} p-2 rounded-lg`}>
-                <action.icon className={`w-4 h-4 ${action.color}`} />
-              </div>
-              <span className="text-xs text-crm-text-primary">{action.label}</span>
-            </Button>
-          </Link>
-        ))}
+        {actions.map((action) => {
+          const handleClick = () => {
+            if (action.href === "#") {
+              if (action.label === "Log Call") {
+                toast.info("Log Call feature coming soon!")
+              } else if (action.label === "Send Email") {
+                toast.info("Send Email feature coming soon!")
+              } else if (action.label === "Schedule Meeting") {
+                toast.info("Schedule Meeting feature coming soon!")
+              }
+            }
+          }
+
+          if (action.href === "#") {
+            return (
+              <Button
+                key={action.label}
+                variant="outline"
+                onClick={handleClick}
+                className="w-full h-auto p-3 flex flex-col items-center gap-2 border-crm-border hover:bg-crm-surface-elevated hover:border-crm-primary transition-colors"
+              >
+                <div className={`${action.bgColor} p-2 rounded-lg`}>
+                  <action.icon className={`w-4 h-4 ${action.color}`} />
+                </div>
+                <span className="text-xs text-crm-text-primary">{action.label}</span>
+              </Button>
+            )
+          }
+
+          return (
+            <Link key={action.label} href={action.href}>
+              <Button
+                variant="outline"
+                className="w-full h-auto p-3 flex flex-col items-center gap-2 border-crm-border hover:bg-crm-surface-elevated hover:border-crm-primary transition-colors"
+              >
+                <div className={`${action.bgColor} p-2 rounded-lg`}>
+                  <action.icon className={`w-4 h-4 ${action.color}`} />
+                </div>
+                <span className="text-xs text-crm-text-primary">{action.label}</span>
+              </Button>
+            </Link>
+          )
+        })}
       </div>
     </Card>
   )
