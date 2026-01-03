@@ -24,6 +24,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
   const [contact, setContact] = useState<any>(null)
   const [company, setCompany] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [keyInfoExpanded, setKeyInfoExpanded] = useState(true)
 
   useEffect(() => {
     async function loadContact() {
@@ -157,12 +158,14 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-crm-text-secondary hover:bg-crm-surface-elevated h-auto p-1"
+                    onClick={() => setKeyInfoExpanded(!keyInfoExpanded)}
+                    className="text-crm-text-secondary hover:bg-crm-surface-elevated h-auto p-1 cursor-pointer"
                   >
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown className={`w-4 h-4 transition-transform ${keyInfoExpanded ? '' : '-rotate-90'}`} />
                   </Button>
                 </div>
 
+                {keyInfoExpanded && (
                 <div className="space-y-3">
                   <div>
                     <label className="text-xs block mb-1" style={{ color: '#757575' }}>Email</label>
@@ -204,6 +207,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                     <p className="text-sm text-crm-text-primary">Sevda Danaie</p>
                   </div>
                 </div>
+                )}
               </div>
             </div>
           </div>

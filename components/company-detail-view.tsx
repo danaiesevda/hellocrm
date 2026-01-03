@@ -24,6 +24,7 @@ export function CompanyDetailView({ companyId }: { companyId: string }) {
   const [contacts, setContacts] = useState<any[]>([])
   const [deals, setDeals] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [keyInfoExpanded, setKeyInfoExpanded] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -134,12 +135,14 @@ export function CompanyDetailView({ companyId }: { companyId: string }) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-crm-text-secondary hover:bg-crm-surface-elevated h-auto p-1"
+                    onClick={() => setKeyInfoExpanded(!keyInfoExpanded)}
+                    className="text-crm-text-secondary hover:bg-crm-surface-elevated h-auto p-1 cursor-pointer"
                   >
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown className={`w-4 h-4 transition-transform ${keyInfoExpanded ? '' : '-rotate-90'}`} />
                   </Button>
                 </div>
 
+                {keyInfoExpanded && (
                 <div className="space-y-3">
                   {company.industry && (
                     <div>
@@ -192,6 +195,7 @@ export function CompanyDetailView({ companyId }: { companyId: string }) {
                     <p className="text-sm text-crm-text-primary">Sevda Danaie</p>
                   </div>
                 </div>
+                )}
               </div>
             </div>
           </div>

@@ -363,11 +363,15 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
 
       {/* Profile Sidebar */}
       <Sheet open={profileOpen} onOpenChange={setProfileOpen}>
-        <SheetContent side="right" className="bg-crm-surface border-crm-border w-80 p-0">
-          <SheetHeader className="p-6 border-b border-crm-border">
+        <SheetContent 
+          side="right" 
+          className="bg-crm-surface border-crm-border w-80 p-0 data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top inset-y-0 right-0 h-full border-l" 
+          style={{ backgroundColor: 'var(--color-crm-surface)' }}
+        >
+          <SheetHeader className="p-6 border-b border-crm-border bg-crm-surface" style={{ backgroundColor: 'var(--color-crm-surface)' }}>
             <SheetTitle className="text-crm-text-primary">Profile</SheetTitle>
           </SheetHeader>
-          <div className="p-6 space-y-6">
+          <div className="p-6 space-y-6 bg-crm-surface h-full overflow-y-auto" style={{ backgroundColor: 'var(--color-crm-surface)' }}>
             <div className="flex flex-col items-center gap-4">
               <Avatar className="w-20 h-20">
                 <AvatarFallback className="bg-crm-primary text-white text-2xl">
