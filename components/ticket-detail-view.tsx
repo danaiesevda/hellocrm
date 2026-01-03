@@ -17,13 +17,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useEffect, useState } from "react"
+import { Edit } from "lucide-react"
+import { EditTicketDialog } from "@/components/edit-ticket-dialog"
 
 export function TicketDetailView({ ticketId }: { ticketId: string }) {
   const [ticket, setTicket] = useState<any>(null)
   const [contact, setContact] = useState<any>(null)
   const [company, setCompany] = useState<any>(null)
+  const [contacts, setContacts] = useState<any[]>([])
+  const [companies, setCompanies] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [keyInfoExpanded, setKeyInfoExpanded] = useState(true)
+  const [editOpen, setEditOpen] = useState(false)
 
   useEffect(() => {
     async function loadTicket() {
@@ -36,6 +41,8 @@ export function TicketDetailView({ ticketId }: { ticketId: string }) {
             setTicket(foundTicket)
             setContact(data.contacts?.find((c: any) => c.id === foundTicket.contactId))
             setCompany(data.companies?.find((c: any) => c.id === foundTicket.companyId))
+            setContacts(data.contacts || [])
+            setCompanies(data.companies || [])
           }
         }
       } catch (error) {
@@ -99,12 +106,13 @@ export function TicketDetailView({ ticketId }: { ticketId: string }) {
           <Button
             variant="outline"
             size="sm"
-            className="text-crm-text-secondary border-crm-border hover:bg-crm-surface-elevated bg-transparent"
+            onClick={() => setEditOpen(true)}
+            className="text-crm-text-secondary border-crm-border hover:bg-crm-surface-elevated bg-transparent cursor-pointer"
           >
-            Actions
-            <ChevronDown className="ml-1 w-4 h-4" />
+            <Edit className="mr-2 h-4 w-4" />
+            Edit
           </Button>
-          <Button variant="ghost" size="icon" className="text-crm-text-secondary hover:bg-crm-surface-elevated">
+          <Button variant="ghost" size="icon" className="text-crm-text-secondary hover:bg-crm-surface-elevated cursor-pointer">
             <MoreHorizontal className="w-5 h-5" />
           </Button>
         </div>
@@ -311,6 +319,30 @@ export function TicketDetailView({ ticketId }: { ticketId: string }) {
           </div>
         </div>
       </div>
+
+      <EditTicketDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        ticket={ticket}
+        contacts={contacts}
+        companies={companies}
+        onTicketUpdated={() => {
+          // Reload ticket data
+          fetch("/api/data")
+            .then((res) => res.json())
+            .then((data) => {
+              const foundTicket = data.tickets?.find((t: any) => t.id === ticketId)
+              if (foundTicket) {
+                setTicket(foundTicket)
+                setContact(data.contacts?.find((c: any) => c.id === foundTicket.contactId))
+                setCompany(data.companies?.find((c: any) => c.id === foundTicket.companyId))
+                setContacts(data.contacts || [])
+                setCompanies(data.companies || [])
+              }
+            })
+            .catch((error) => console.error("Error reloading ticket:", error))
+        }}
+      />
     </div>
   )
 }

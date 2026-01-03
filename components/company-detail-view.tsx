@@ -18,6 +18,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useEffect, useState } from "react"
+import { Edit } from "lucide-react"
+import { EditCompanyDialog } from "@/components/edit-company-dialog"
 
 export function CompanyDetailView({ companyId }: { companyId: string }) {
   const [company, setCompany] = useState<any>(null)
@@ -26,6 +28,7 @@ export function CompanyDetailView({ companyId }: { companyId: string }) {
   const [loading, setLoading] = useState(true)
   const [keyInfoExpanded, setKeyInfoExpanded] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [editOpen, setEditOpen] = useState(false)
 
   useEffect(() => {
     async function loadCompany() {
@@ -95,12 +98,18 @@ export function CompanyDetailView({ companyId }: { companyId: string }) {
           <Button
             variant="outline"
             size="sm"
-            className="text-crm-text-secondary border-crm-border hover:bg-crm-surface-elevated bg-transparent"
+            onClick={() => {
+              if (company && company.id) {
+                setEditOpen(true)
+              }
+            }}
+            disabled={!company || !company.id}
+            className="text-crm-text-secondary border-crm-border hover:bg-crm-surface-elevated bg-transparent cursor-pointer"
           >
-            Actions
-            <ChevronDown className="ml-1 w-4 h-4" />
+            <Edit className="mr-2 h-4 w-4" />
+            Edit
           </Button>
-          <Button variant="ghost" size="icon" className="text-crm-text-secondary hover:bg-crm-surface-elevated">
+          <Button variant="ghost" size="icon" className="text-crm-text-secondary hover:bg-crm-surface-elevated cursor-pointer">
             <MoreHorizontal className="w-5 h-5" />
           </Button>
         </div>
@@ -410,6 +419,26 @@ export function CompanyDetailView({ companyId }: { companyId: string }) {
           </div>
         </div>
       </div>
+
+      <EditCompanyDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        company={company}
+        onCompanyUpdated={() => {
+          // Reload company data
+          fetch("/api/data")
+            .then((res) => res.json())
+            .then((data) => {
+              const foundCompany = data.companies?.find((c: any) => c.id === companyId)
+              if (foundCompany) {
+                setCompany(foundCompany)
+                setContacts(data.contacts?.filter((c: any) => c.companyId === companyId) || [])
+                setDeals(data.deals?.filter((d: any) => d.companyId === companyId) || [])
+              }
+            })
+            .catch((error) => console.error("Error reloading company:", error))
+        }}
+      />
     </div>
   )
 }

@@ -16,13 +16,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useEffect, useState } from "react"
+import { Edit } from "lucide-react"
+import { EditDealDialog } from "@/components/edit-deal-dialog"
 
 export function DealDetailView({ dealId }: { dealId: string }) {
   const [deal, setDeal] = useState<any>(null)
   const [company, setCompany] = useState<any>(null)
   const [contacts, setContacts] = useState<any[]>([])
+  const [companies, setCompanies] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [keyInfoExpanded, setKeyInfoExpanded] = useState(true)
+  const [editOpen, setEditOpen] = useState(false)
 
   useEffect(() => {
     async function loadDeal() {
@@ -35,6 +39,7 @@ export function DealDetailView({ dealId }: { dealId: string }) {
             setDeal(foundDeal)
             setCompany(data.companies?.find((c: any) => c.id === foundDeal.companyId))
             setContacts(data.contacts?.filter((c: any) => foundDeal.contactIds?.includes(c.id)) || [])
+            setCompanies(data.companies || [])
           }
         }
       } catch (error) {
@@ -103,12 +108,13 @@ export function DealDetailView({ dealId }: { dealId: string }) {
           <Button
             variant="outline"
             size="sm"
-            className="text-crm-text-secondary border-crm-border hover:bg-crm-surface-elevated bg-transparent"
+            onClick={() => setEditOpen(true)}
+            className="text-crm-text-secondary border-crm-border hover:bg-crm-surface-elevated bg-transparent cursor-pointer"
           >
-            Actions
-            <ChevronDown className="ml-1 w-4 h-4" />
+            <Edit className="mr-2 h-4 w-4" />
+            Edit
           </Button>
-          <Button variant="ghost" size="icon" className="text-crm-text-secondary hover:bg-crm-surface-elevated">
+          <Button variant="ghost" size="icon" className="text-crm-text-secondary hover:bg-crm-surface-elevated cursor-pointer">
             <MoreHorizontal className="w-5 h-5" />
           </Button>
         </div>
@@ -302,6 +308,28 @@ export function DealDetailView({ dealId }: { dealId: string }) {
           </div>
         </div>
       </div>
+
+      <EditDealDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        deal={deal}
+        companies={companies}
+        onDealUpdated={() => {
+          // Reload deal data
+          fetch("/api/data")
+            .then((res) => res.json())
+            .then((data) => {
+              const foundDeal = data.deals?.find((d: any) => d.id === dealId)
+              if (foundDeal) {
+                setDeal(foundDeal)
+                setCompany(data.companies?.find((c: any) => c.id === foundDeal.companyId))
+                setContacts(data.contacts?.filter((c: any) => foundDeal.contactIds?.includes(c.id)) || [])
+                setCompanies(data.companies || [])
+              }
+            })
+            .catch((error) => console.error("Error reloading deal:", error))
+        }}
+      />
     </div>
   )
 }

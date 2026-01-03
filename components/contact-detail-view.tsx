@@ -11,6 +11,11 @@ import {
   DollarSign,
   FileText,
   Paperclip,
+  Edit,
+  Trash2,
+  Copy,
+  Share2,
+  Settings,
 } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -18,13 +23,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
+import { EditContactDialog } from "@/components/edit-contact-dialog"
 
 export function ContactDetailView({ contactId }: { contactId: string }) {
   const [contact, setContact] = useState<any>(null)
   const [company, setCompany] = useState<any>(null)
+  const [companies, setCompanies] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [keyInfoExpanded, setKeyInfoExpanded] = useState(true)
+  const [editOpen, setEditOpen] = useState(false)
 
   useEffect(() => {
     async function loadContact() {
@@ -37,6 +54,7 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
             const foundCompany = data.companies?.find((c: any) => c.id === foundContact.companyId)
             setContact(foundContact)
             setCompany(foundCompany)
+            setCompanies(data.companies || [])
           }
         }
       } catch (error) {
@@ -47,6 +65,22 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
     }
     loadContact()
   }, [contactId])
+
+  const handleContactUpdated = () => {
+    // Reload contact data
+    const response = fetch("/api/data")
+      .then((res) => res.json())
+      .then((data) => {
+        const foundContact = data.contacts?.find((c: any) => c.id === contactId)
+        if (foundContact) {
+          const foundCompany = data.companies?.find((c: any) => c.id === foundContact.companyId)
+          setContact(foundContact)
+          setCompany(foundCompany)
+          setCompanies(data.companies || [])
+        }
+      })
+      .catch((error) => console.error("Error reloading contact:", error))
+  }
 
   if (loading) {
     return (
@@ -82,14 +116,57 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
           <Button
             variant="outline"
             size="sm"
-            className="text-crm-text-secondary border-crm-border hover:bg-crm-surface-elevated bg-transparent"
+            onClick={() => setEditOpen(true)}
+            className="text-crm-text-secondary border-crm-border hover:bg-crm-surface-elevated bg-transparent cursor-pointer"
           >
-            Actions
-            <ChevronDown className="ml-1 w-4 h-4" />
+            <Edit className="mr-2 h-4 w-4" />
+            Edit
           </Button>
-          <Button variant="ghost" size="icon" className="text-crm-text-secondary hover:bg-crm-surface-elevated">
-            <MoreHorizontal className="w-5 h-5" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-crm-text-secondary hover:bg-crm-surface-elevated cursor-pointer">
+                <MoreHorizontal className="w-5 h-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-crm-surface border-crm-border min-w-[180px]">
+              <DropdownMenuItem 
+                className="cursor-pointer text-crm-text-primary hover:bg-crm-surface-elevated focus:bg-crm-surface-elevated"
+                onClick={() => {
+                  navigator.clipboard.writeText(`${contact.firstName} ${contact.lastName}`)
+                  toast.success("Contact name copied to clipboard")
+                }}
+              >
+                <Copy className="mr-2 h-4 w-4" />
+                Copy Contact
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                className="cursor-pointer text-crm-text-primary hover:bg-crm-surface-elevated focus:bg-crm-surface-elevated"
+                onClick={() => {
+                  navigator.clipboard.writeText(contact.email || "")
+                  toast.success("Email copied to clipboard")
+                }}
+              >
+                <Mail className="mr-2 h-4 w-4" />
+                Copy Email
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-crm-border" />
+              <DropdownMenuItem 
+                className="cursor-pointer text-crm-text-primary hover:bg-crm-surface-elevated focus:bg-crm-surface-elevated"
+                onClick={() => toast.info("Share contact functionality coming soon")}
+              >
+                <Share2 className="mr-2 h-4 w-4" />
+                Share Contact
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-crm-border" />
+              <DropdownMenuItem 
+                className="cursor-pointer text-red-500 hover:bg-red-500/10 focus:bg-red-500/10 focus:text-red-500"
+                onClick={() => toast.info("Delete contact functionality coming soon")}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete Contact
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -241,13 +318,6 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
                 >
                   Intelligence
                 </TabsTrigger>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="rounded-lg border border-crm-border bg-transparent text-crm-text-secondary hover:text-crm-text-primary hover:bg-crm-surface-elevated hover:border-crm-border px-4 py-2 h-auto"
-                >
-                  Customize
-                </Button>
               </TabsList>
 
               <TabsContent value="about" className="mt-0">
@@ -474,6 +544,14 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
           </div>
         </div>
       </div>
+
+      <EditContactDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        contact={contact}
+        companies={companies}
+        onContactUpdated={handleContactUpdated}
+      />
     </div>
   )
 }

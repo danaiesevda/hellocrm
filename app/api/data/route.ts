@@ -13,6 +13,17 @@ function writeData(data: any) {
   fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), "utf8")
 }
 
+// Helper function to get the correct collection name
+function getCollectionName(type: string): string {
+  const collectionMap: Record<string, string> = {
+    company: "companies",
+    contact: "contacts",
+    deal: "deals",
+    ticket: "tickets",
+  }
+  return collectionMap[type] || `${type}s`
+}
+
 export async function GET() {
   try {
     const data = readData()
@@ -32,7 +43,7 @@ export async function POST(request: Request) {
     }
 
     const data = readData()
-    const collection = `${type}s` as keyof typeof data
+    const collection = getCollectionName(type) as keyof typeof data
 
     if (!data[collection] || !Array.isArray(data[collection])) {
       // Initialize empty array if collection doesn't exist
@@ -124,6 +135,59 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error("Error creating entity:", error)
     const errorMessage = error?.message || "Failed to create entity"
+    return NextResponse.json({ error: errorMessage, details: error?.stack }, { status: 500 })
+  }
+}
+
+export async function PUT(request: Request) {
+  try {
+    const body = await request.json()
+    const { type, id, ...updates } = body
+
+    if (!type || !id) {
+      return NextResponse.json({ error: "Type and ID are required" }, { status: 400 })
+    }
+
+    const data = readData()
+    const collection = getCollectionName(type) as keyof typeof data
+
+    if (!data[collection] || !Array.isArray(data[collection])) {
+      return NextResponse.json({ error: `Collection ${String(collection)} not found` }, { status: 404 })
+    }
+
+    const index = (data[collection] as any[]).findIndex((item: any) => item.id === id)
+    if (index === -1) {
+      return NextResponse.json({ error: `${type} with ID ${id} not found` }, { status: 404 })
+    }
+
+    // Update the entity while preserving the ID and other important fields
+    const existingEntity = (data[collection] as any[])[index]
+    const updatedEntity = {
+      ...existingEntity,
+      ...updates,
+      id: existingEntity.id, // Preserve the ID
+      updatedAt: new Date().toISOString(), // Update timestamp
+    }
+
+    // Update avatar for contacts if name changed
+    if (type === "contact" && (updates.firstName || updates.lastName)) {
+      const firstName = updates.firstName || existingEntity.firstName || ""
+      const lastName = updates.lastName || existingEntity.lastName || ""
+      updatedEntity.avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName + " " + lastName)}&background=87CEEB&color=fff&size=128&bold=true`
+    }
+
+    // Update updatedAt for tickets
+    if (type === "ticket") {
+      updatedEntity.updatedAt = new Date().toISOString()
+    }
+
+    ;(data[collection] as any[])[index] = updatedEntity
+    writeData(data)
+
+    return NextResponse.json(updatedEntity)
+  } catch (error: any) {
+    console.error("Error updating entity:", error)
+    const errorMessage = error?.message || "Failed to update entity"
     return NextResponse.json({ error: errorMessage, details: error?.stack }, { status: 500 })
   }
 }

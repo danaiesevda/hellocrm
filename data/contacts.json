@@ -94,11 +94,12 @@
       "stateRegion": "FL",
       "postalCode": "37764",
       "leadStatus": "--",
-      "lifecycleStage": "Opportunity",
+      "lifecycleStage": "Customer",
       "buyingRole": "Economic Buyer",
       "ownerId": "sevda-danaie",
       "avatar": "https://ui-avatars.com/api/?name=Brandon%20Campbell&background=87CEEB&color=fff&size=128&bold=true",
-      "lastActivity": "No activity yet"
+      "lastActivity": "No activity yet",
+      "updatedAt": "2026-01-03T20:32:15.477Z"
     },
     {
       "id": "6",
@@ -629,13 +630,14 @@
       "phone": "+33 124 384 7479",
       "industry": "Automotive",
       "employees": "8,538",
-      "revenue": "$729M",
+      "revenue": "$722M",
       "address": "3812 Oak Street",
-      "city": "Austin",
+      "city": "NYC",
       "country": "United States",
       "ownerId": "sevda-danaie",
       "lifecycleStage": "Opportunity",
-      "isPrimary": true
+      "isPrimary": true,
+      "updatedAt": "2026-01-03T20:31:49.515Z"
     },
     {
       "id": "google",

@@ -50,7 +50,7 @@ export function RecentActivity() {
     } else if (diffDays < 7) {
       return `${diffDays}d ago`
     } else {
-      return date.toLocaleDateString()
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     }
   }
 
@@ -69,7 +69,7 @@ export function RecentActivity() {
         type: "note",
         contactId: deal.contactIds?.[0] || "",
         title: `Deal "${deal.name}" updated to ${deal.stage}`,
-        timestamp: new Date().toISOString(),
+        timestamp: deal.updatedAt || deal.createdAt || new Date().toISOString(),
         userId: deal.ownerId,
       })),
   ]
