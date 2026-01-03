@@ -20,6 +20,7 @@ function getCollectionName(type: string): string {
     contact: "contacts",
     deal: "deals",
     ticket: "tickets",
+    user: "users",
   }
   return collectionMap[type] || `${type}s`
 }

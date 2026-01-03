@@ -53,6 +53,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
   const [searchQuery, setSearchQuery] = useState("")
   const [profileOpen, setProfileOpen] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [userData, setUserData] = useState<{ name: string; email: string; initials: string } | null>(null)
   const [searchResults, setSearchResults] = useState<{
     contacts: any[]
     companies: any[]
@@ -121,6 +122,40 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  // Load user data
+  useEffect(() => {
+    async function loadUserData() {
+      try {
+        const response = await fetch("/api/data")
+        if (response.ok) {
+          const data = await response.json()
+          const user = data.users?.find((u: any) => u.id === "sevda-danaie")
+          if (user) {
+            setUserData({
+              name: user.name || "Sevda Danaie",
+              email: user.email || "sevda@company.com",
+              initials: user.initials || "SD",
+            })
+          } else {
+            setUserData({
+              name: "Sevda Danaie",
+              email: "sevda@company.com",
+              initials: "SD",
+            })
+          }
+        }
+      } catch (error) {
+        console.error("Error loading user data:", error)
+        setUserData({
+          name: "Sevda Danaie",
+          email: "sevda@company.com",
+          initials: "SD",
+        })
+      }
+    }
+    loadUserData()
   }, [])
 
   // Load search data
@@ -452,7 +487,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
               onClick={() => setProfileOpen(true)}
               className="w-8 h-8 rounded-full bg-crm-primary flex items-center justify-center text-white text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
             >
-              SD
+              {userData?.initials || "SD"}
             </button>
           </div>
         </header>
@@ -484,8 +519,8 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
           <div className="flex flex-col rounded-lg bg-crm-surface overflow-hidden h-full" style={{ backgroundColor: 'var(--color-crm-surface)' }}>
             <div className="p-6 pb-0 bg-crm-surface rounded-t-lg" style={{ backgroundColor: 'var(--color-crm-surface)' }}>
               <div className="flex flex-col" style={{ gap: '10px' }}>
-                <h3 className="text-lg font-semibold text-crm-text-primary">Sevda Danaie</h3>
-                <p className="text-sm text-crm-text-secondary">sevda@company.com</p>
+                <h3 className="text-lg font-semibold text-crm-text-primary">{userData?.name || "Sevda Danaie"}</h3>
+                <p className="text-sm text-crm-text-secondary">{userData?.email || "sevda@company.com"}</p>
               </div>
             </div>
 

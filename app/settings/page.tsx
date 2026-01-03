@@ -1,3 +1,5 @@
+"use client"
+
 import { CrmLayout } from "@/components/crm-layout"
 import { Settings, User, Bell, Shield, Database, Palette } from "lucide-react"
 import { Card } from "@/components/ui/card"
@@ -6,8 +8,79 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export default function SettingsPage() {
+  const router = useRouter()
+  const [firstName, setFirstName] = useState("Sevda")
+  const [lastName, setLastName] = useState("Danaie")
+  const [email, setEmail] = useState("sevda@company.com")
+  const [isSaving, setIsSaving] = useState(false)
+  const [emailNotifications, setEmailNotifications] = useState(true)
+  const [dealUpdates, setDealUpdates] = useState(true)
+
+  useEffect(() => {
+    // Load current user data
+    async function loadUserData() {
+      try {
+        const response = await fetch("/api/data")
+        if (response.ok) {
+          const data = await response.json()
+          const user = data.users?.find((u: any) => u.id === "sevda-danaie")
+          if (user) {
+            const nameParts = user.name?.split(" ") || []
+            setFirstName(nameParts[0] || "Sevda")
+            setLastName(nameParts.slice(1).join(" ") || "Danaie")
+            setEmail(user.email || "sevda@company.com")
+          }
+        }
+      } catch (error) {
+        console.error("Error loading user data:", error)
+      }
+    }
+    loadUserData()
+  }, [])
+
+  const handleSaveProfile = async () => {
+    setIsSaving(true)
+    try {
+      const fullName = `${firstName} ${lastName}`.trim()
+      const initials = `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() || "SD"
+
+      const response = await fetch("/api/data", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "user",
+          id: "sevda-danaie",
+          name: fullName,
+          email: email,
+          initials: initials,
+        }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || "Failed to save settings")
+      }
+
+      toast.success("Settings saved successfully!")
+      
+      // Force a full page reload to update all components
+      setTimeout(() => {
+        window.location.reload()
+      }, 500)
+    } catch (error: any) {
+      console.error("Error saving settings:", error)
+      toast.error(error.message || "Failed to save settings")
+    } finally {
+      setIsSaving(false)
+    }
+  }
   return (
     <CrmLayout>
       <div className="p-6">
@@ -42,7 +115,8 @@ export default function SettingsPage() {
                   </Label>
                   <Input
                     id="firstName"
-                    defaultValue="Sevda"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                     className="mt-1.5 bg-crm-bg border-crm-border text-crm-text-primary"
                   />
                 </div>
@@ -52,7 +126,8 @@ export default function SettingsPage() {
                   </Label>
                   <Input
                     id="lastName"
-                    defaultValue="Danaie"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                     className="mt-1.5 bg-crm-bg border-crm-border text-crm-text-primary"
                   />
                 </div>
@@ -64,11 +139,18 @@ export default function SettingsPage() {
                 <Input
                   id="email"
                   type="email"
-                  defaultValue="danaie.sevda@gmail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="mt-1.5 bg-crm-bg border-crm-border text-crm-text-primary"
                 />
               </div>
-              <Button className="bg-crm-primary hover:bg-crm-primary-hover text-white cursor-pointer">Save Changes</Button>
+              <Button 
+                onClick={handleSaveProfile}
+                disabled={isSaving}
+                className="bg-crm-primary hover:bg-crm-primary-hover text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSaving ? "Saving..." : "Save Changes"}
+              </Button>
             </div>
           </Card>
 
@@ -87,9 +169,14 @@ export default function SettingsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-crm-border text-crm-text-secondary bg-transparent"
+                  onClick={() => setEmailNotifications(!emailNotifications)}
+                  className={`border-crm-border bg-transparent cursor-pointer ${
+                    emailNotifications 
+                      ? "text-crm-text-secondary" 
+                      : "text-crm-text-tertiary"
+                  }`}
                 >
-                  Enabled
+                  {emailNotifications ? "Enabled" : "Disabled"}
                 </Button>
               </div>
               <Separator className="bg-crm-border" />
@@ -101,9 +188,14 @@ export default function SettingsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-crm-border text-crm-text-secondary bg-transparent"
+                  onClick={() => setDealUpdates(!dealUpdates)}
+                  className={`border-crm-border bg-transparent cursor-pointer ${
+                    dealUpdates 
+                      ? "text-crm-text-secondary" 
+                      : "text-crm-text-tertiary"
+                  }`}
                 >
-                  Enabled
+                  {dealUpdates ? "Enabled" : "Disabled"}
                 </Button>
               </div>
             </div>

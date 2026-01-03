@@ -1,3 +1,5 @@
+"use client"
+
 import { CrmLayout } from "@/components/crm-layout"
 import { DashboardStats } from "@/components/dashboard-stats"
 import { PipelineOverview } from "@/components/pipeline-overview"
@@ -7,9 +9,29 @@ import { UpcomingTasks } from "@/components/upcoming-tasks"
 import { RecentActivity } from "@/components/recent-activity"
 import { QuickActions } from "@/components/quick-actions"
 import { Home } from "lucide-react"
-import data from "@/data/contacts.json"
+import { useEffect, useState } from "react"
 
 export default function DashboardPage() {
+  const [userName, setUserName] = useState("User")
+
+  useEffect(() => {
+    async function loadUserData() {
+      try {
+        const response = await fetch("/api/data")
+        if (response.ok) {
+          const data = await response.json()
+          const user = data.users?.find((u: any) => u.id === "sevda-danaie")
+          if (user) {
+            setUserName(user.name || "User")
+          }
+        }
+      } catch (error) {
+        console.error("Error loading user data:", error)
+      }
+    }
+    loadUserData()
+  }, [])
+
   return (
     <CrmLayout>
       <div className="p-6">
@@ -21,7 +43,7 @@ export default function DashboardPage() {
               <h1 className="text-2xl font-semibold text-crm-text-primary">Dashboard</h1>
             </div>
             <p className="text-sm text-crm-text-secondary mt-0.5 ml-9">
-              Welcome back, {data.users[0]?.name || "User"}
+              Welcome back, {userName}
             </p>
           </div>
         </div>

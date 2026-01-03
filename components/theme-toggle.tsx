@@ -25,9 +25,9 @@ export function ThemeToggle() {
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
         {isDark ? (
-          <Moon className="w-5 h-5 text-crm-text-secondary" />
+          <Moon className="w-5 h-5 text-blue-500" />
         ) : (
-          <Sun className="w-5 h-5 text-crm-text-secondary" />
+          <Sun className="w-5 h-5 text-blue-500" />
         )}
         <div>
           <Label htmlFor="theme-toggle" className="text-sm text-crm-text-primary cursor-pointer">

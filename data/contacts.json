@@ -7849,8 +7849,9 @@
     {
       "id": "sevda-danaie",
       "name": "Sevda Danaie",
-      "email": "sevda@company.com",
-      "initials": "SD"
+      "email": "danaie.sevda@company.com",
+      "initials": "SD",
+      "updatedAt": "2026-01-03T22:42:18.608Z"
     }
   ],
   "companys": [
