@@ -90,7 +90,7 @@ function DealsPageContent() {
             <h1 className="text-2xl font-semibold text-crm-text-primary">Deals</h1>
           </div>
           <Link href="/deals?create=true">
-            <Button className="bg-crm-primary hover:bg-crm-primary-hover text-white">
+            <Button className="bg-crm-primary hover:bg-crm-primary-hover text-white cursor-pointer">
               + Create Deal
             </Button>
           </Link>

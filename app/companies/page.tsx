@@ -48,7 +48,7 @@ function CompaniesPageContent() {
             <h1 className="text-2xl font-semibold text-crm-text-primary">Companies</h1>
           </div>
           <Link href="/companies?create=true">
-            <Button className="bg-crm-primary hover:bg-crm-primary-hover text-white">
+            <Button className="bg-crm-primary hover:bg-crm-primary-hover text-white cursor-pointer">
               + Create Company
             </Button>
           </Link>

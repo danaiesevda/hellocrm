@@ -23,6 +23,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Separator } from "@/components/ui/separator"
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
@@ -40,6 +48,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [profileOpen, setProfileOpen] = useState(false)
   const [searchResults, setSearchResults] = useState<{
     contacts: any[]
     companies: any[]
@@ -137,7 +146,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
       {/* Left Sidebar */}
       <div className="w-20 bg-crm-surface border-r border-crm-border flex flex-col items-center pt-1 pb-4 gap-6">
         {/* Logo */}
-        <Link href="/" className="w-12 h-12 flex items-center justify-center hover:opacity-80 transition-opacity">
+        <Link href="/" className="w-12 h-12 flex items-center justify-center hover:opacity-80 transition-opacity cursor-pointer">
           {mounted ? (
             <Image
               src={logoSrc}
@@ -163,7 +172,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
+                  "w-10 h-10 rounded-lg flex items-center justify-center transition-colors cursor-pointer",
                   isActive
                     ? "bg-crm-primary text-white"
                     : "text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary",
@@ -179,7 +188,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
         {/* Bottom Settings */}
         <Link
           href="/settings"
-          className="w-10 h-10 rounded-lg flex items-center justify-center text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors"
+          className="w-10 h-10 rounded-lg flex items-center justify-center text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors cursor-pointer"
           title="Settings"
         >
           <Settings className="w-5 h-5" />
@@ -191,17 +200,19 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
         {/* Top Header */}
         <header className="h-14 bg-crm-surface border-b border-crm-border flex items-center justify-between px-6 gap-4">
           {/* Search Bar */}
-          <Popover open={searchOpen} onOpenChange={setSearchOpen}>
+          <Popover open={searchOpen} onOpenChange={(open) => {
+            setSearchOpen(open)
+            if (!open) {
+              setSearchQuery("")
+            }
+          }}>
             <PopoverTrigger asChild>
               <button
                 type="button"
-                className="flex-1 max-w-2xl h-9 px-4 py-2 justify-start text-left font-normal bg-crm-surface border border-crm-border-light rounded-md text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors inline-flex items-center gap-2"
+                className="flex-1 max-w-2xl h-9 px-4 py-2 justify-start text-left font-normal bg-crm-surface border border-crm-border-light rounded-md text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors inline-flex items-center gap-2 cursor-pointer"
               >
                 <Search className="h-4 w-4 text-crm-text-tertiary" />
-                <span className="text-crm-text-tertiary">Search CRM...</span>
-                {searchQuery && (
-                  <span className="ml-2 text-crm-text-primary">{searchQuery}</span>
-                )}
+                <span className="text-crm-text-tertiary">Search...</span>
                 <kbd className="ml-auto pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-crm-surface-elevated px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
                   <span className="text-xs">⌘</span>K
                 </kbd>
@@ -213,7 +224,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
                   placeholder="Search contacts, companies, deals, tickets..."
                   value={searchQuery}
                   onValueChange={setSearchQuery}
-                  className="bg-crm-surface border-crm-border text-crm-text-primary"
+                  className="bg-crm-surface border-crm-border text-crm-text-primary cursor-text"
                   style={{ backgroundColor: 'var(--color-crm-surface)' }}
                 />
                 <CommandList className="max-h-[400px] bg-crm-surface" style={{ backgroundColor: 'var(--color-crm-surface)' }}>
@@ -231,7 +242,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
                             setSearchQuery("")
                           }}
                           className="text-crm-text-primary hover:bg-crm-surface-elevated cursor-pointer bg-crm-surface"
-                          style={{ backgroundColor: 'var(--color-crm-surface)' }}
+                          style={{ backgroundColor: 'var(--color-crm-surface)', cursor: 'pointer' }}
                         >
                           <Users className="mr-2 h-4 w-4 text-crm-primary" />
                           <span>
@@ -318,14 +329,14 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
             <Button
               variant="ghost"
               size="icon"
-              className="text-crm-text-secondary hover:text-crm-text-primary hover:bg-crm-surface-elevated"
+              className="text-crm-text-secondary hover:text-crm-text-primary hover:bg-crm-surface-elevated cursor-pointer"
             >
               <HelpCircle className="w-5 h-5" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="text-crm-text-secondary hover:text-crm-text-primary hover:bg-crm-surface-elevated relative"
+              className="text-crm-text-secondary hover:text-crm-text-primary hover:bg-crm-surface-elevated relative cursor-pointer"
             >
               <Bell className="w-5 h-5" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-crm-primary rounded-full"></span>
@@ -333,19 +344,66 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
             <Button
               variant="outline"
               size="sm"
-              className="border-crm-primary text-crm-primary hover:bg-crm-primary hover:text-white bg-transparent"
+              className="border-crm-primary text-crm-primary hover:bg-crm-primary hover:text-white bg-transparent cursor-pointer"
             >
               Upgrade
             </Button>
-            <div className="w-8 h-8 rounded-full bg-crm-primary flex items-center justify-center text-white text-sm font-medium">
+            <button
+              onClick={() => setProfileOpen(true)}
+              className="w-8 h-8 rounded-full bg-crm-primary flex items-center justify-center text-white text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
+            >
               SD
-            </div>
+            </button>
           </div>
         </header>
 
         {/* Page Content */}
         <main className="flex-1 overflow-auto">{children}</main>
       </div>
+
+      {/* Profile Sidebar */}
+      <Sheet open={profileOpen} onOpenChange={setProfileOpen}>
+        <SheetContent side="right" className="bg-crm-surface border-crm-border w-80 p-0">
+          <SheetHeader className="p-6 border-b border-crm-border">
+            <SheetTitle className="text-crm-text-primary">Profile</SheetTitle>
+          </SheetHeader>
+          <div className="p-6 space-y-6">
+            <div className="flex flex-col items-center gap-4">
+              <Avatar className="w-20 h-20">
+                <AvatarFallback className="bg-crm-primary text-white text-2xl">
+                  SD
+                </AvatarFallback>
+              </Avatar>
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-crm-text-primary">Sevda Danaie</h3>
+                <p className="text-sm text-crm-text-secondary">sevda@company.com</p>
+              </div>
+            </div>
+
+            <Separator className="bg-crm-border" />
+
+            <div className="space-y-2">
+              <Link
+                href="/settings"
+                onClick={() => setProfileOpen(false)}
+                className="block px-4 py-2 rounded-lg text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors cursor-pointer"
+              >
+                Settings
+              </Link>
+              <button
+                className="w-full text-left px-4 py-2 rounded-lg text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors cursor-pointer"
+              >
+                Help & Support
+              </button>
+              <button
+                className="w-full text-left px-4 py-2 rounded-lg text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors cursor-pointer"
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   )
 }

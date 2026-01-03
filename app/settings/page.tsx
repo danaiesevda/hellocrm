@@ -68,7 +68,7 @@ export default function SettingsPage() {
                   className="mt-1.5 bg-crm-bg border-crm-border text-crm-text-primary"
                 />
               </div>
-              <Button className="bg-crm-primary hover:bg-crm-primary-hover text-white">Save Changes</Button>
+              <Button className="bg-crm-primary hover:bg-crm-primary-hover text-white cursor-pointer">Save Changes</Button>
             </div>
           </Card>
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { CrmLayout } from "@/components/crm-layout"
-import { Ticket, AlertCircle, Clock, CheckCircle } from "lucide-react"
+import { Ticket, FileText, Clock, CheckCircle } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -80,7 +80,7 @@ function TicketsPageContent() {
             <h1 className="text-2xl font-semibold text-crm-text-primary">Tickets</h1>
           </div>
           <Link href="/tickets?create=true">
-            <Button className="bg-crm-primary hover:bg-crm-primary-hover text-white">+ Create Ticket</Button>
+            <Button className="bg-crm-primary hover:bg-crm-primary-hover text-white cursor-pointer">+ Create Ticket</Button>
           </Link>
         </div>
 
@@ -88,7 +88,7 @@ function TicketsPageContent() {
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="bg-crm-surface rounded-lg border border-crm-border p-6">
             <div className="flex items-center gap-2 mb-2">
-              <AlertCircle className="w-5 h-5 text-crm-danger" />
+              <FileText className="w-5 h-5 text-crm-danger" />
               <span className="text-sm text-crm-text-secondary">New Tickets</span>
             </div>
             <p className="text-2xl font-semibold text-crm-text-primary">{newTickets}</p>

@@ -205,7 +205,7 @@ companies.slice(0, 120).forEach((name, index) => {
     address: `${randomInt(100, 9999)} ${randomElement(['Main', 'Park', 'Oak', 'Maple', 'First', 'Second'])} Street`,
     city: location.city,
     country: 'United States',
-    ownerId: 'mohammed-ahmadi',
+    ownerId: 'sevda-danaie',
     lifecycleStage: randomElement(lifecycleStages),
     isPrimary: index < 10
   });
@@ -238,7 +238,7 @@ generatedCompanies.forEach(company => {
       leadStatus: randomElement(['New', 'Qualified', 'Contacted', '--']),
       lifecycleStage: randomElement(lifecycleStages),
       buyingRole: randomElement([...buyingRoles, '--']),
-      ownerId: 'mohammed-ahmadi',
+      ownerId: 'sevda-danaie',
       avatar: '/placeholder.svg?height=80&width=80',
       lastActivity: randomElement([
         `Completed call with ${firstName}`,
@@ -311,7 +311,7 @@ generatedCompanies.forEach(company => {
       contactIds: companyContacts.length > 0 
         ? [companyContacts[randomInt(0, companyContacts.length - 1)].id]
         : [],
-      ownerId: 'mohammed-ahmadi',
+      ownerId: 'sevda-danaie',
       priority: randomElement(['high', 'medium', 'low'])
     });
     dealId++;
@@ -355,7 +355,7 @@ for (let i = 0; i < 150; i++) {
     contactId: contact.id,
     title: title,
     timestamp: activityDate.toISOString(),
-    userId: 'mohammed-ahmadi'
+    userId: 'sevda-danaie'
   });
   activityId++;
 }
@@ -390,7 +390,7 @@ for (let i = 0; i < 30; i++) {
     priority: randomElement(['High', 'Medium', 'Low']),
     contactId: contact.id,
     companyId: company?.id || '',
-    assigneeId: 'mohammed-ahmadi',
+    assigneeId: 'sevda-danaie',
     createdAt: createdAt.toISOString(),
     updatedAt: updatedAt.toISOString()
   });
@@ -400,10 +400,10 @@ for (let i = 0; i < 30; i++) {
 // Preserve users
 const users = [
   {
-    id: 'mohammed-ahmadi',
-    name: 'Mohammed Ahmadi',
-    email: 'mohammed@company.com',
-    initials: 'MA'
+    id: 'sevda-danaie',
+    name: 'Sevda Danaie',
+    email: 'sevda@company.com',
+    initials: 'SD'
   }
 ];
 
