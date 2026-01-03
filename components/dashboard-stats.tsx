@@ -86,10 +86,10 @@ export function DashboardStats() {
               <stat.icon className={`w-5 h-5 ${stat.color}`} />
             </div>
             {stat.value && (
-              <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0">
                 <p className="text-xs text-crm-text-secondary mb-1">{stat.label}</p>
-                <p className="text-xl font-semibold text-crm-text-primary">{stat.value}</p>
-              </div>
+              <p className="text-xl font-semibold text-crm-text-primary">{stat.value}</p>
+            </div>
             )}
             {!stat.value && (
               <div className="flex-1 min-w-0">

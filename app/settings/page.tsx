@@ -115,16 +115,16 @@ export default function SettingsPage() {
               <Shield className="w-5 h-5 text-crm-primary" />
               <h2 className="text-lg font-semibold text-crm-text-primary">Security</h2>
             </div>
-            <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
               <Button
                 variant="outline"
-                className="border-crm-border text-crm-text-primary hover:bg-crm-surface-elevated bg-transparent"
+                className="border-crm-border text-crm-text-primary hover:bg-crm-surface-elevated bg-transparent cursor-pointer"
               >
                 Change Password
               </Button>
               <Button
                 variant="outline"
-                className="border-crm-border text-crm-text-primary hover:bg-crm-surface-elevated bg-transparent"
+                className="border-crm-border text-crm-text-primary hover:bg-crm-surface-elevated bg-transparent cursor-pointer"
               >
                 Enable Two-Factor Authentication
               </Button>
@@ -138,22 +138,24 @@ export default function SettingsPage() {
               <h2 className="text-lg font-semibold text-crm-text-primary">Data Management</h2>
             </div>
             <div className="space-y-3">
-              <Button
-                variant="outline"
-                className="border-crm-border text-crm-text-primary hover:bg-crm-surface-elevated bg-transparent"
-              >
-                Export All Data
-              </Button>
-              <Button
-                variant="outline"
-                className="border-crm-border text-crm-text-primary hover:bg-crm-surface-elevated bg-transparent"
-              >
-                Import Contacts
-              </Button>
+              <div className="grid grid-cols-2 gap-4">
+                <Button
+                  variant="outline"
+                  className="border-crm-border text-crm-text-primary hover:bg-crm-surface-elevated bg-transparent cursor-pointer"
+                >
+                  Export All Data
+                </Button>
+                <Button
+                  variant="outline"
+                  className="border-crm-border text-crm-text-primary hover:bg-crm-surface-elevated bg-transparent cursor-pointer"
+                >
+                  Import Contacts
+                </Button>
+              </div>
               <Separator className="bg-crm-border" />
               <Button
                 variant="outline"
-                className="border-crm-danger text-crm-danger hover:bg-crm-danger hover:text-white bg-transparent"
+                className="border-crm-border text-crm-text-primary hover:bg-crm-surface-elevated bg-transparent cursor-pointer"
               >
                 Delete All Data
               </Button>

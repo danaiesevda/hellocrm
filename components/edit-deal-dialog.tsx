@@ -137,8 +137,6 @@ export function EditDealDialog({
     }
   }
 
-  if (!deal) return null
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="!bg-crm-surface !border-crm-border max-w-2xl" style={{ backgroundColor: 'var(--color-crm-surface)', opacity: 1 }}>
@@ -148,6 +146,9 @@ export function EditDealDialog({
             Update deal information
           </DialogDescription>
         </DialogHeader>
+        {!deal ? (
+          <div className="py-8 text-center text-crm-text-secondary">Loading deal...</div>
+        ) : (
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -344,6 +345,7 @@ export function EditDealDialog({
             </DialogFooter>
           </form>
         </Form>
+        )}
       </DialogContent>
     </Dialog>
   )

@@ -201,8 +201,6 @@ export function EditContactDialog({
     }
   }
 
-  if (!contact) return null
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="!bg-crm-surface !border-crm-border max-w-2xl max-h-[90vh] overflow-y-auto" style={{ backgroundColor: 'var(--color-crm-surface)', opacity: 1 }}>
@@ -212,6 +210,9 @@ export function EditContactDialog({
             Update contact information
           </DialogDescription>
         </DialogHeader>
+        {!contact ? (
+          <div className="py-8 text-center text-crm-text-secondary">Loading contact...</div>
+        ) : (
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -376,6 +377,7 @@ export function EditContactDialog({
             </DialogFooter>
           </form>
         </Form>
+        )}
       </DialogContent>
     </Dialog>
   )

@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { Home, Users, Building2, TrendingUp, Ticket, BarChart3, Settings, Search, Bell, HelpCircle, Mail, DollarSign } from "lucide-react"
+import { Home, Users, Building2, TrendingUp, Ticket, BarChart3, Settings, Search, Bell, HelpCircle, Mail, DollarSign, LogOut, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
@@ -23,14 +23,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { Badge } from "@/components/ui/badge"
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetDescription,
 } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
+import { toast } from "sonner"
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
@@ -49,6 +52,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [profileOpen, setProfileOpen] = useState(false)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [searchResults, setSearchResults] = useState<{
     contacts: any[]
     companies: any[]
@@ -60,6 +64,44 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
     deals: [],
     tickets: [],
   })
+
+  // Mock notifications data
+  const [notifications] = useState([
+    {
+      id: "1",
+      title: "New deal created",
+      message: "Apple Renewal Contract deal was created",
+      time: "2 minutes ago",
+      read: false,
+      type: "deal"
+    },
+    {
+      id: "2",
+      title: "Contact updated",
+      message: "Layla Cooper's information was updated",
+      time: "15 minutes ago",
+      read: false,
+      type: "contact"
+    },
+    {
+      id: "3",
+      title: "Ticket assigned",
+      message: "You were assigned to ticket #1234",
+      time: "1 hour ago",
+      read: true,
+      type: "ticket"
+    },
+    {
+      id: "4",
+      title: "Company added",
+      message: "New company Microsoft was added",
+      time: "2 hours ago",
+      read: true,
+      type: "company"
+    }
+  ])
+
+  const unreadCount = notifications.filter(n => !n.read).length
 
   useEffect(() => {
     setMounted(true)
@@ -146,7 +188,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
       {/* Left Sidebar */}
       <div className="w-20 bg-crm-surface border-r border-crm-border flex flex-col items-center pt-1 pb-4 gap-6">
         {/* Logo */}
-        <Link href="/" className="w-12 h-12 flex items-center justify-center hover:opacity-80 transition-opacity cursor-pointer">
+        <Link href="/" className="w-12 h-12 flex items-center justify-center hover:opacity-80 transition-opacity cursor-pointer" style={{ marginTop: '10px' }}>
           {mounted ? (
             <Image
               src={logoSrc}
@@ -326,28 +368,86 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
 
           {/* Right Actions */}
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-crm-text-secondary hover:text-crm-text-primary hover:bg-crm-surface-elevated cursor-pointer"
-            >
-              <HelpCircle className="w-5 h-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-crm-text-secondary hover:text-crm-text-primary hover:bg-crm-surface-elevated relative cursor-pointer"
-            >
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-crm-primary rounded-full"></span>
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-crm-primary text-crm-primary hover:bg-crm-primary hover:text-white bg-transparent cursor-pointer"
-            >
-              Upgrade
-            </Button>
+            <Popover open={notificationsOpen} onOpenChange={setNotificationsOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-crm-text-secondary hover:text-crm-text-primary hover:bg-crm-surface-elevated relative cursor-pointer"
+                >
+                  <Bell className="w-5 h-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-crm-primary rounded-full"></span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent 
+                className="w-80 p-0 bg-crm-surface border-crm-border" 
+                align="end"
+                sideOffset={5}
+                style={{ backgroundColor: 'var(--color-crm-surface)', opacity: 1 }}
+              >
+                <div className="p-4 border-b border-crm-border">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-base font-semibold text-crm-text-primary">Notifications</h3>
+                    {unreadCount > 0 && (
+                      <Badge variant="secondary" className="bg-crm-primary text-white text-xs">
+                        {unreadCount} new
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                <div className="max-h-[400px] overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <div className="p-8 text-center text-crm-text-secondary text-sm">
+                      No notifications
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-crm-border">
+                      {notifications.map((notification) => (
+                        <div
+                          key={notification.id}
+                          className={`p-4 hover:bg-crm-surface-elevated transition-colors cursor-pointer ${
+                            !notification.read ? 'bg-crm-surface-elevated/50' : ''
+                          }`}
+                          onClick={() => {
+                            // Handle notification click
+                            setNotificationsOpen(false)
+                          }}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className={`mt-1 w-2 h-2 rounded-full ${
+                              !notification.read ? 'bg-crm-primary' : 'bg-transparent'
+                            }`} />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-crm-text-primary">
+                                {notification.title}
+                              </p>
+                              <p className="text-xs text-crm-text-secondary mt-1">
+                                {notification.message}
+                              </p>
+                              <p className="text-xs text-crm-text-tertiary mt-1">
+                                {notification.time}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {notifications.length > 0 && (
+                  <div className="p-3 border-t border-crm-border">
+                    <button
+                      className="w-full text-sm text-crm-text-secondary hover:text-crm-text-primary text-center cursor-pointer"
+                      onClick={() => setNotificationsOpen(false)}
+                    >
+                      Mark all as read
+                    </button>
+                  </div>
+                )}
+              </PopoverContent>
+            </Popover>
             <button
               onClick={() => setProfileOpen(true)}
               className="w-8 h-8 rounded-full bg-crm-primary flex items-center justify-center text-white text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
@@ -365,45 +465,67 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
       <Sheet open={profileOpen} onOpenChange={setProfileOpen}>
         <SheetContent 
           side="right" 
-          className="bg-crm-surface border-crm-border w-80 p-0 data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top inset-y-0 right-0 h-full border-l" 
-          style={{ backgroundColor: 'var(--color-crm-surface)' }}
+          className="border-crm-border w-64 p-0 rounded-lg border-l bg-transparent overflow-hidden" 
+          style={{ 
+            backgroundColor: 'transparent',
+            transition: 'none',
+            animation: 'none',
+            height: 'auto',
+            maxHeight: 'calc(100vh - 2rem)',
+            top: '1rem',
+            bottom: 'auto',
+            right: '20px'
+          }}
         >
-          <SheetHeader className="p-6 border-b border-crm-border bg-crm-surface" style={{ backgroundColor: 'var(--color-crm-surface)' }}>
-            <SheetTitle className="text-crm-text-primary">Profile</SheetTitle>
+          <SheetHeader className="sr-only">
+            <SheetTitle>Profile Menu</SheetTitle>
+            <SheetDescription>User profile and account settings</SheetDescription>
           </SheetHeader>
-          <div className="p-6 space-y-6 bg-crm-surface h-full overflow-y-auto" style={{ backgroundColor: 'var(--color-crm-surface)' }}>
-            <div className="flex flex-col items-center gap-4">
-              <Avatar className="w-20 h-20">
-                <AvatarFallback className="bg-crm-primary text-white text-2xl">
-                  SD
-                </AvatarFallback>
-              </Avatar>
-              <div className="text-center">
+          <div className="flex flex-col rounded-lg bg-crm-surface overflow-hidden h-full" style={{ backgroundColor: 'var(--color-crm-surface)' }}>
+            <div className="p-6 pb-0 bg-crm-surface rounded-t-lg" style={{ backgroundColor: 'var(--color-crm-surface)' }}>
+              <div className="flex flex-col" style={{ gap: '10px' }}>
                 <h3 className="text-lg font-semibold text-crm-text-primary">Sevda Danaie</h3>
                 <p className="text-sm text-crm-text-secondary">sevda@company.com</p>
               </div>
             </div>
 
-            <Separator className="bg-crm-border" />
+            <Separator className="bg-crm-border" style={{ marginTop: '10px', marginBottom: '10px' }} />
 
-            <div className="space-y-2">
-              <Link
-                href="/settings"
-                onClick={() => setProfileOpen(false)}
-                className="block px-4 py-2 rounded-lg text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors cursor-pointer"
+            <div className="flex-1 flex flex-col p-4 pt-0 bg-crm-surface" style={{ backgroundColor: 'var(--color-crm-surface)' }}>
+              <div className="space-y-1">
+                <Link
+                  href="/settings"
+                  onClick={() => setProfileOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors cursor-pointer"
+                >
+                  <Settings className="w-4 h-4" />
+                  <span>Settings</span>
+                </Link>
+                <Link
+                  href="/help"
+                  onClick={() => setProfileOpen(false)}
+                  className="w-full flex items-center gap-3 text-left px-3 py-2.5 rounded-lg text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors cursor-pointer"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                  <span>Help & Support</span>
+                </Link>
+                <button
+                  className="w-full flex items-center gap-3 text-left px-3 py-2.5 rounded-lg text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="p-4 bg-crm-surface rounded-b-lg border-t border-crm-border" style={{ backgroundColor: 'var(--color-crm-surface)' }}>
+              <Button
+                className="w-full bg-crm-surface-elevated hover:bg-crm-surface-elevated/80 text-blue-500 border border-blue-500 hover:border-blue-600 cursor-pointer"
+                onClick={() => toast.info("Upgrade to Pro feature coming soon")}
               >
-                Settings
-              </Link>
-              <button
-                className="w-full text-left px-4 py-2 rounded-lg text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors cursor-pointer"
-              >
-                Help & Support
-              </button>
-              <button
-                className="w-full text-left px-4 py-2 rounded-lg text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors cursor-pointer"
-              >
-                Sign Out
-              </button>
+                <Sparkles className="w-4 h-4 mr-2 text-blue-500" />
+                <span className="text-blue-500">Upgrade to Pro</span>
+              </Button>
             </div>
           </div>
         </SheetContent>

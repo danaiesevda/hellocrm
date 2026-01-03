@@ -133,8 +133,6 @@ export function EditTicketDialog({
     }
   }
 
-  if (!ticket) return null
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="!bg-crm-surface !border-crm-border max-w-2xl max-h-[90vh] overflow-y-auto" style={{ backgroundColor: 'var(--color-crm-surface)', opacity: 1 }}>
@@ -144,6 +142,9 @@ export function EditTicketDialog({
             Update ticket information
           </DialogDescription>
         </DialogHeader>
+        {!ticket ? (
+          <div className="py-8 text-center text-crm-text-secondary">Loading ticket...</div>
+        ) : (
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -321,6 +322,7 @@ export function EditTicketDialog({
             </DialogFooter>
           </form>
         </Form>
+        )}
       </DialogContent>
     </Dialog>
   )

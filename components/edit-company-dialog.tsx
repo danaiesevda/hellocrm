@@ -158,8 +158,6 @@ export function EditCompanyDialog({
     }
   }
 
-  if (!company) return null
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="!bg-crm-surface !border-crm-border max-w-2xl max-h-[90vh] overflow-y-auto" style={{ backgroundColor: 'var(--color-crm-surface)', opacity: 1 }}>
@@ -169,6 +167,9 @@ export function EditCompanyDialog({
             Update company information
           </DialogDescription>
         </DialogHeader>
+        {!company ? (
+          <div className="py-8 text-center text-crm-text-secondary">Loading company...</div>
+        ) : (
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -387,6 +388,7 @@ export function EditCompanyDialog({
             </DialogFooter>
           </form>
         </Form>
+        )}
       </DialogContent>
     </Dialog>
   )
