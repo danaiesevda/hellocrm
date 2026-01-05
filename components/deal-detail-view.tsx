@@ -4,7 +4,6 @@ import {
   DollarSign,
   Calendar,
   TrendingUp,
-  MoreHorizontal,
   ChevronDown,
   Building2,
   Users,
@@ -113,9 +112,6 @@ export function DealDetailView({ dealId }: { dealId: string }) {
           >
             <Edit className="mr-2 h-4 w-4" />
             Edit
-          </Button>
-          <Button variant="ghost" size="icon" className="text-crm-text-secondary hover:bg-crm-surface-elevated cursor-pointer">
-            <MoreHorizontal className="w-5 h-5" />
           </Button>
         </div>
       </div>

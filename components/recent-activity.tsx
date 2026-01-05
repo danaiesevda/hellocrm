@@ -1,21 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Activity, Phone, Mail, Calendar, FileText, User } from "lucide-react"
 import data from "@/data/contacts.json"
 
 export function RecentActivity() {
-  const [currentTime, setCurrentTime] = useState<number | null>(null)
   const activities = data.activities || []
   const contacts = data.contacts || []
   const deals = data.deals || []
-
-  // Set current time only on client to avoid hydration mismatch
-  useEffect(() => {
-    setCurrentTime(Date.now())
-  }, [])
 
   // Get contact name
   const getContactName = (contactId: string) => {
@@ -39,37 +32,26 @@ export function RecentActivity() {
     }
   }
 
-  // Format timestamp - use consistent format on server, relative time on client
+  // Format timestamp
   const formatTime = (timestamp: string) => {
     const date = new Date(timestamp)
-    // Use a consistent date format to avoid hydration mismatches
-    const formatDate = (d: Date) => {
-      const month = String(d.getMonth() + 1).padStart(2, '0')
-      const day = String(d.getDate()).padStart(2, '0')
-      const year = d.getFullYear()
-      return `${month}/${day}/${year}`
-    }
-    
-    // Only calculate relative time on client after hydration
-    if (currentTime !== null) {
-      const diffMs = currentTime - date.getTime()
-      const diffMins = Math.floor(diffMs / 60000)
-      const diffHours = Math.floor(diffMs / 3600000)
-      const diffDays = Math.floor(diffMs / 86400000)
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMs / 3600000)
+    const diffDays = Math.floor(diffMs / 86400000)
 
-      if (diffMins < 60 && diffMins >= 0) {
-        return `${diffMins}m ago`
-      } else if (diffHours < 24 && diffHours >= 0) {
-        return `${diffHours}h ago`
-      } else if (diffDays === 1) {
-        return "Yesterday"
-      } else if (diffDays < 7 && diffDays >= 0) {
-        return `${diffDays}d ago`
-      }
+    if (diffMins < 60) {
+      return `${diffMins}m ago`
+    } else if (diffHours < 24) {
+      return `${diffHours}h ago`
+    } else if (diffDays === 1) {
+      return "Yesterday"
+    } else if (diffDays < 7) {
+      return `${diffDays}d ago`
+    } else {
+      return date.toLocaleDateString()
     }
-    
-    // For dates older than 7 days or during SSR, use consistent format
-    return formatDate(date)
   }
 
   // Combine activities with deal updates for a richer feed
@@ -79,7 +61,6 @@ export function RecentActivity() {
       type: activity.type,
     })),
     // Add some sample activities based on deals
-    // Use closeDate or a fixed past timestamp to avoid hydration mismatch
     ...deals
       .filter((d) => d.stage !== "Closed Won")
       .slice(0, 2)
@@ -88,9 +69,7 @@ export function RecentActivity() {
         type: "note",
         contactId: deal.contactIds?.[0] || "",
         title: `Deal "${deal.name}" updated to ${deal.stage}`,
-        timestamp: deal.closeDate 
-          ? new Date(deal.closeDate).toISOString() 
-          : "2025-11-01T00:00:00.000Z", // Fixed past date as fallback to avoid hydration mismatch
+        timestamp: new Date().toISOString(),
         userId: deal.ownerId,
       })),
   ]

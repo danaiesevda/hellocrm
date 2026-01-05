@@ -31,6 +31,17 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useRouter } from "next/navigation"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Trash2 } from "lucide-react"
 
 const companySchema = z.object({
   name: z.string().min(1, "Company name is required"),
@@ -63,6 +74,8 @@ export function EditCompanyDialog({
 }: EditCompanyDialogProps) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const form = useForm<CompanyFormValues>({
     resolver: zodResolver(companySchema),
@@ -155,6 +168,35 @@ export function EditCompanyDialog({
       // Don't close dialog on error so user can try again
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!company || !company.id) return
+
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/data?type=company&id=${company.id}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || "Failed to delete company")
+      }
+
+      toast.success("Company deleted successfully!")
+      setShowDeleteDialog(false)
+      onOpenChange(false)
+
+      // Redirect to companies list
+      router.push("/companies")
+    } catch (error: any) {
+      console.error("Error deleting company:", error)
+      const errorMessage = error?.message || "Failed to delete company. Please try again."
+      toast.error(errorMessage)
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -373,6 +415,17 @@ export function EditCompanyDialog({
               <Button
                 type="button"
                 variant="outline"
+                onClick={() => setShowDeleteDialog(true)}
+                disabled={isSubmitting || isDeleting}
+                className="border-red-500/50 text-red-500 hover:bg-red-500/10 hover:border-red-500"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </Button>
+              <div className="flex-1" />
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => onOpenChange(false)}
                 className="border-crm-border text-crm-text-primary hover:bg-crm-surface-elevated"
               >
@@ -380,7 +433,7 @@ export function EditCompanyDialog({
               </Button>
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isDeleting}
                 className="bg-crm-primary hover:bg-crm-primary-hover text-white"
               >
                 {isSubmitting ? "Updating..." : "Update Company"}
@@ -390,6 +443,29 @@ export function EditCompanyDialog({
         </Form>
         )}
       </DialogContent>
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent className="!bg-crm-surface !border-crm-border">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-crm-text-primary">Delete Company</AlertDialogTitle>
+            <AlertDialogDescription className="text-crm-text-secondary">
+              Are you sure you want to delete {company?.name}? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-crm-border text-crm-text-primary hover:bg-crm-surface-elevated">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="bg-red-500 hover:bg-red-600 text-white"
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   )
 }

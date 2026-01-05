@@ -39,9 +39,9 @@
   --sidebar-ring: oklch(0.708 0 0);
 
   /* CRM Light Theme Colors (default) */
-  --color-crm-bg: #ffffff;
-  --color-crm-surface: #f8f9fa;
-  --color-crm-surface-elevated: #f1f3f5;
+  --color-crm-bg: #FAFAFA;
+  --color-crm-surface: #ffffff;
+  --color-crm-surface-elevated: #f8f9fa;
   --color-crm-border: #e9ecef;
   --color-crm-border-light: #dee2e6;
   --color-crm-text-primary: #212529;
@@ -92,6 +92,18 @@
   --color-crm-text-primary: #ffffff;
   --color-crm-text-secondary: #a0a0a0;
   --color-crm-text-tertiary: #737373;
+
+  /* Status Colors - keep original light colors for dark mode */
+  --color-crm-success: #90EE90; /* CLOSED - light green */
+  --color-crm-warning: #FFD700; /* PRE-SALE - light yellow/orange */
+  --color-crm-danger: #FFB6C1; /* LOST - light pink/red */
+  --color-crm-info: #87CEEB; /* CLOSING - light blue */
+  --color-crm-purple: #DDA0DD; /* NEW - light purple */
+  
+  /* Probability Colors - keep original light colors for dark mode */
+  --color-crm-prob-high: #90EE90; /* HIGH - light green */
+  --color-crm-prob-mid: #FFD700; /* MID - light yellow */
+  --color-crm-prob-low: #FFB6C1; /* LOW - light pink */
 }
 
 @theme inline {
@@ -102,17 +114,17 @@
   --color-crm-primary-hover: #2563eb;
   --color-crm-primary-light: #60a5fa;
 
-  /* Status Colors (matching image - light/pastel versions) */
-  --color-crm-success: #90EE90; /* CLOSED - light green */
-  --color-crm-warning: #FFD700; /* PRE-SALE - light yellow/orange */
-  --color-crm-danger: #FFB6C1; /* LOST - light pink/red */
-  --color-crm-info: #87CEEB; /* CLOSING - light blue */
-  --color-crm-purple: #DDA0DD; /* NEW - light purple */
+  /* Status Colors - darker versions for light mode */
+  --color-crm-success: #22c55e; /* CLOSED - darker green */
+  --color-crm-warning: #eab308; /* PRE-SALE - darker yellow */
+  --color-crm-danger: #ef4444; /* LOST - darker pink/red */
+  --color-crm-info: #3b82f6; /* CLOSING - darker blue */
+  --color-crm-purple: #a855f7; /* NEW - darker purple */
   
-  /* Probability Colors (light/pastel versions) */
-  --color-crm-prob-high: #90EE90; /* HIGH - light green */
-  --color-crm-prob-mid: #FFD700; /* MID - light yellow */
-  --color-crm-prob-low: #FFB6C1; /* LOW - light pink */
+  /* Probability Colors - darker versions for light mode */
+  --color-crm-prob-high: #22c55e; /* HIGH - darker green */
+  --color-crm-prob-mid: #eab308; /* MID - darker yellow */
+  --color-crm-prob-low: #ef4444; /* LOW - darker pink */
 
   /* Semantic tokens */
   --color-background: var(--color-crm-bg);
@@ -166,5 +178,40 @@
   body {
     background-color: var(--color-crm-bg);
     color: var(--color-foreground);
+  }
+  
+  /* Ensure all boxes/cards are white in light mode */
+  :root:not(.dark) [data-slot="card"],
+  :root:not(.dark) .bg-crm-surface {
+    background-color: #ffffff !important;
+  }
+  
+  /* Remove drop shadows from all buttons and input boxes in light mode */
+  :root:not(.dark) button,
+  :root:not(.dark) [data-slot="button"],
+  :root:not(.dark) input,
+  :root:not(.dark) [data-slot="input"],
+  :root:not(.dark) textarea,
+  :root:not(.dark) select {
+    box-shadow: none !important;
+  }
+  
+  /* Add blue stroke to buttons when clicked or focused in light mode */
+  :root:not(.dark) button {
+    box-sizing: border-box;
+  }
+  
+  :root:not(.dark) button:active,
+  :root:not(.dark) button:focus,
+  :root:not(.dark) [data-slot="button"]:active,
+  :root:not(.dark) [data-slot="button"]:focus {
+    border: 2px solid #3b82f6 !important;
+    outline: none !important;
+  }
+  
+  /* Ensure buttons without existing borders get transparent border to prevent layout shift */
+  :root:not(.dark) button:not([class*="border"]):not(:active):not(:focus),
+  :root:not(.dark) [data-slot="button"]:not([class*="border"]):not(:active):not(:focus) {
+    border: 2px solid transparent;
   }
 }

@@ -5,16 +5,12 @@ import {
   Phone,
   Video,
   Calendar,
-  MoreHorizontal,
   ChevronDown,
   Building2,
   DollarSign,
   FileText,
   Paperclip,
   Edit,
-  Trash2,
-  Copy,
-  Share2,
   Settings,
 } from "lucide-react"
 import Link from "next/link"
@@ -23,14 +19,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { EditContactDialog } from "@/components/edit-contact-dialog"
@@ -122,51 +110,6 @@ export function ContactDetailView({ contactId }: { contactId: string }) {
             <Edit className="mr-2 h-4 w-4" />
             Edit
           </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-crm-text-secondary hover:bg-crm-surface-elevated cursor-pointer">
-                <MoreHorizontal className="w-5 h-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-crm-surface border-crm-border min-w-[180px]">
-              <DropdownMenuItem 
-                className="cursor-pointer text-crm-text-primary hover:bg-crm-surface-elevated focus:bg-crm-surface-elevated"
-                onClick={() => {
-                  navigator.clipboard.writeText(`${contact.firstName} ${contact.lastName}`)
-                  toast.success("Contact name copied to clipboard")
-                }}
-              >
-                <Copy className="mr-2 h-4 w-4" />
-                Copy Contact
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                className="cursor-pointer text-crm-text-primary hover:bg-crm-surface-elevated focus:bg-crm-surface-elevated"
-                onClick={() => {
-                  navigator.clipboard.writeText(contact.email || "")
-                  toast.success("Email copied to clipboard")
-                }}
-              >
-                <Mail className="mr-2 h-4 w-4" />
-                Copy Email
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-crm-border" />
-              <DropdownMenuItem 
-                className="cursor-pointer text-crm-text-primary hover:bg-crm-surface-elevated focus:bg-crm-surface-elevated"
-                onClick={() => toast.info("Share contact functionality coming soon")}
-              >
-                <Share2 className="mr-2 h-4 w-4" />
-                Share Contact
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-crm-border" />
-              <DropdownMenuItem 
-                className="cursor-pointer text-red-500 hover:bg-red-500/10 focus:bg-red-500/10 focus:text-red-500"
-                onClick={() => toast.info("Delete contact functionality coming soon")}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete Contact
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </div>
 

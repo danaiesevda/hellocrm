@@ -193,3 +193,38 @@ export async function PUT(request: Request) {
   }
 }
 
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const type = searchParams.get("type")
+    const id = searchParams.get("id")
+
+    if (!type || !id) {
+      return NextResponse.json({ error: "Type and ID are required" }, { status: 400 })
+    }
+
+    const data = readData()
+    const collection = getCollectionName(type) as keyof typeof data
+
+    if (!data[collection] || !Array.isArray(data[collection])) {
+      return NextResponse.json({ error: `Collection ${String(collection)} not found` }, { status: 404 })
+    }
+
+    const index = (data[collection] as any[]).findIndex((item: any) => item.id === id)
+    if (index === -1) {
+      return NextResponse.json({ error: `${type} with ID ${id} not found` }, { status: 404 })
+    }
+
+    // Remove the entity from the array
+    const deletedEntity = (data[collection] as any[])[index]
+    ;(data[collection] as any[]).splice(index, 1)
+    writeData(data)
+
+    return NextResponse.json({ success: true, deleted: deletedEntity })
+  } catch (error: any) {
+    console.error("Error deleting entity:", error)
+    const errorMessage = error?.message || "Failed to delete entity"
+    return NextResponse.json({ error: errorMessage, details: error?.stack }, { status: 500 })
+  }
+}
+

@@ -5,7 +5,6 @@ import {
   AlertCircle,
   Clock,
   CheckCircle,
-  MoreHorizontal,
   ChevronDown,
   Building2,
   Users,
@@ -111,9 +110,6 @@ export function TicketDetailView({ ticketId }: { ticketId: string }) {
           >
             <Edit className="mr-2 h-4 w-4" />
             Edit
-          </Button>
-          <Button variant="ghost" size="icon" className="text-crm-text-secondary hover:bg-crm-surface-elevated cursor-pointer">
-            <MoreHorizontal className="w-5 h-5" />
           </Button>
         </div>
       </div>
