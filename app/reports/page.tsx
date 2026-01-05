@@ -133,7 +133,7 @@ export default function ReportsPage() {
     <CrmLayout>
       <div className="p-6">
         <div className="flex items-center gap-3 mb-6">
-          <BarChart3 className="w-6 h-6 text-white" />
+          <BarChart3 className="w-6 h-6 text-crm-primary dark:text-white" />
           <h1 className="text-2xl font-semibold text-crm-text-primary">Reports & Analytics</h1>
         </div>
 

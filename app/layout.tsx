@@ -3,6 +3,7 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
+import { WelcomeModal } from "@/components/welcome-modal"
 
 export const metadata: Metadata = {
   title: "HelloCRM",
@@ -18,7 +19,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <WelcomeModal />
           {children}
           <Toaster />
         </ThemeProvider>

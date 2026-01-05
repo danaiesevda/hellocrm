@@ -39,7 +39,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
           <div className="flex items-center gap-3">
-              <Home className="w-6 h-6 text-white" />
+              <Home className="w-6 h-6 text-crm-primary dark:text-white" />
               <h1 className="text-2xl font-semibold text-crm-text-primary">Dashboard</h1>
             </div>
             <p className="text-sm text-crm-text-secondary mt-0.5 ml-9">

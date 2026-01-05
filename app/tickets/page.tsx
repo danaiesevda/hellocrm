@@ -76,7 +76,7 @@ function TicketsPageContent() {
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <Ticket className="w-6 h-6 text-white" />
+            <Ticket className="w-6 h-6 text-crm-primary dark:text-white" />
             <h1 className="text-2xl font-semibold text-crm-text-primary">Tickets</h1>
           </div>
           <Link href="/tickets?create=true">
