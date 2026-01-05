@@ -545,7 +545,7 @@ export function CrmLayout({ children }: { children: React.ReactNode }) {
                   <span>Help & Support</span>
                 </Link>
                 <button
-                  className="w-full flex items-center gap-3 text-left px-3 py-2.5 rounded-lg text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors cursor-pointer"
+                  className="w-full flex items-center gap-3 text-left px-3 py-2.5 rounded-lg text-crm-text-secondary hover:bg-crm-surface-elevated hover:text-crm-text-primary transition-colors cursor-pointer border-0 dark:border-0"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Sign Out</span>

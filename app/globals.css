@@ -201,17 +201,34 @@
     box-sizing: border-box;
   }
   
-  :root:not(.dark) button:active,
-  :root:not(.dark) button:focus,
-  :root:not(.dark) [data-slot="button"]:active,
-  :root:not(.dark) [data-slot="button"]:focus {
+  :root:not(.dark) button:active:not([class*="border-0"]):not([data-slot="switch"]),
+  :root:not(.dark) button:focus:not([class*="border-0"]):not([data-slot="switch"]),
+  :root:not(.dark) [data-slot="button"]:active:not([data-slot="switch"]),
+  :root:not(.dark) [data-slot="button"]:focus:not([data-slot="switch"]) {
     border: 2px solid #3b82f6 !important;
     outline: none !important;
   }
   
   /* Ensure buttons without existing borders get transparent border to prevent layout shift */
-  :root:not(.dark) button:not([class*="border"]):not(:active):not(:focus),
-  :root:not(.dark) [data-slot="button"]:not([class*="border"]):not(:active):not(:focus) {
+  :root:not(.dark) button:not([class*="border"]):not(:active):not(:focus):not([data-slot="switch"]),
+  :root:not(.dark) [data-slot="button"]:not([class*="border"]):not(:active):not(:focus):not([data-slot="switch"]) {
     border: 2px solid transparent;
+  }
+  
+  /* Remove border from Sign Out button in light mode */
+  :root:not(.dark) button.border-0,
+  :root:not(.dark) button.border-0:active,
+  :root:not(.dark) button.border-0:focus {
+    border: none !important;
+  }
+  
+  /* Remove blue border from Switch toggle in light mode */
+  :root:not(.dark) [data-slot="switch"],
+  :root:not(.dark) [data-slot="switch"]:active,
+  :root:not(.dark) [data-slot="switch"]:focus,
+  :root:not(.dark) [data-slot="switch"]:focus-visible {
+    border: 1px solid transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
   }
 }
