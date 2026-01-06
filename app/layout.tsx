@@ -8,7 +8,10 @@ import { WelcomeModal } from "@/components/welcome-modal"
 export const metadata: Metadata = {
   title: "HelloCRM",
   description: "Self-hosted CRM for managing contacts, companies, deals, and tickets",
-    generator: 'v0.app'
+  generator: 'v0.app',
+  icons: {
+    icon: '/icon.png',
+  },
 }
 
 export default function RootLayout({
