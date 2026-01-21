@@ -16,10 +16,7 @@ export function WelcomeModal() {
 
   useEffect(() => {
     // Show welcome modal every time the website opens
-    // Small delay to ensure smooth animation
-    setTimeout(() => {
-      setIsOpen(true)
-    }, 300)
+    setIsOpen(true)
   }, [])
 
   const handleClose = () => {
@@ -51,12 +48,12 @@ export function WelcomeModal() {
 
           {/* Title with fade-in animation */}
           <DialogTitle className="text-3xl font-bold text-crm-text-primary animate-fade-in text-center px-4">
-            A SaaS CRM I planned, managed, built, and shipped. No slides were harmed in the process :)
+            Open-Source CRM
           </DialogTitle>
 
           {/* Description with slide-up animation */}
           <DialogDescription className="text-base text-crm-text-secondary leading-relaxed animate-slide-up text-center max-w-xl mx-auto px-4 pt-2">
-            From discovery and roadmapping to execution and launch, I owned the full product journey. This project shows how I work as a PM: structured when needed, flexible when reality hits, and always focused on getting a real product live.
+            I researched, designed, and deployed a CRM for a client last year. To help SMEs access the insights and usability of a modern CRM without high licensing costs, I created an open-source version that teams can quickly copy, customise, and deploy internally.
           </DialogDescription>
 
           {/* Button with scale animation */}
