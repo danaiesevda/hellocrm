@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { WelcomeModal } from "@/components/welcome-modal"
+import { StickerCursor } from "@/components/sticker-cursor"
 
 export const metadata: Metadata = {
   title: "HelloCRM",
@@ -50,6 +51,7 @@ export default function RootLayout({
           {children}
           <Toaster />
         </ThemeProvider>
+        <StickerCursor />
       </body>
     </html>
   )
